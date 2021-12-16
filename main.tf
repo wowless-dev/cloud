@@ -135,9 +135,9 @@ resource "google_cloud_scheduler_job" "wowcig-classic" {
   time_zone = "America/Chicago"
   http_target {
     http_method = "POST"
-    uri         = "https://wowcig-pxnmni7wma-uc.a.run.app/wowcig?product=wow_classic&db2=all"
+    uri         = "${google_cloud_run_service.wowcig.status[0].url}/wowcig?product=wow_classic&db2=all"
     oidc_token {
-      audience              = "https://wowcig-pxnmni7wma-uc.a.run.app/wowcig?product=wow_classic&db2=all"
+      audience              = "${google_cloud_run_service.wowcig.status[0].url}/wowcig?product=wow_classic&db2=all"
       service_account_email = data.google_compute_default_service_account.default.email
     }
   }
@@ -156,9 +156,9 @@ resource "google_cloud_scheduler_job" "wowcig-classic-era" {
   time_zone = "America/Chicago"
   http_target {
     http_method = "POST"
-    uri         = "https://wowcig-pxnmni7wma-uc.a.run.app/wowcig?product=wow_classic_era&db2=all"
+    uri         = "${google_cloud_run_service.wowcig.status[0].url}/wowcig?product=wow_classic_era&db2=all"
     oidc_token {
-      audience              = "https://wowcig-pxnmni7wma-uc.a.run.app/wowcig?product=wow_classic_era&db2=all"
+      audience              = "${google_cloud_run_service.wowcig.status[0].url}/wowcig?product=wow_classic_era&db2=all"
       service_account_email = data.google_compute_default_service_account.default.email
     }
   }
@@ -177,9 +177,9 @@ resource "google_cloud_scheduler_job" "wowcig-classic-era-ptr" {
   time_zone = "America/Chicago"
   http_target {
     http_method = "POST"
-    uri         = "https://wowcig-pxnmni7wma-uc.a.run.app/wowcig?product=wow_classic_era_ptr&db2=all"
+    uri         = "${google_cloud_run_service.wowcig.status[0].url}/wowcig?product=wow_classic_era_ptr&db2=all"
     oidc_token {
-      audience              = "https://wowcig-pxnmni7wma-uc.a.run.app/wowcig?product=wow_classic_era_ptr&db2=all"
+      audience              = "${google_cloud_run_service.wowcig.status[0].url}/wowcig?product=wow_classic_era_ptr&db2=all"
       service_account_email = data.google_compute_default_service_account.default.email
     }
   }
@@ -198,9 +198,9 @@ resource "google_cloud_scheduler_job" "wowcig-classic-ptr" {
   time_zone = "America/Chicago"
   http_target {
     http_method = "POST"
-    uri         = "https://wowcig-pxnmni7wma-uc.a.run.app/wowcig?product=wow_classic_ptr&db2=all"
+    uri         = "${google_cloud_run_service.wowcig.status[0].url}/wowcig?product=wow_classic_ptr&db2=all"
     oidc_token {
-      audience              = "https://wowcig-pxnmni7wma-uc.a.run.app/wowcig?product=wow_classic_ptr&db2=all"
+      audience              = "${google_cloud_run_service.wowcig.status[0].url}/wowcig?product=wow_classic_ptr&db2=all"
       service_account_email = data.google_compute_default_service_account.default.email
     }
   }
@@ -219,9 +219,9 @@ resource "google_cloud_scheduler_job" "wowcig-retail" {
   time_zone = "America/Chicago"
   http_target {
     http_method = "POST"
-    uri         = "https://wowcig-pxnmni7wma-uc.a.run.app/wowcig?product=wow&db2=all"
+    uri         = "${google_cloud_run_service.wowcig.status[0].url}/wowcig?product=wow&db2=all"
     oidc_token {
-      audience              = "https://wowcig-pxnmni7wma-uc.a.run.app/wowcig?product=wow&db2=all"
+      audience              = "${google_cloud_run_service.wowcig.status[0].url}/wowcig?product=wow&db2=all"
       service_account_email = data.google_compute_default_service_account.default.email
     }
   }
@@ -240,9 +240,9 @@ resource "google_cloud_scheduler_job" "wowcig-retail-ptr" {
   time_zone = "America/Chicago"
   http_target {
     http_method = "POST"
-    uri         = "https://wowcig-pxnmni7wma-uc.a.run.app/wowcig?product=wowt&db2=all"
+    uri         = "${google_cloud_run_service.wowcig.status[0].url}/wowcig?product=wowt&db2=all"
     oidc_token {
-      audience              = "https://wowcig-pxnmni7wma-uc.a.run.app/wowcig?product=wowt&db2=all"
+      audience              = "${google_cloud_run_service.wowcig.status[0].url}/wowcig?product=wowt&db2=all"
       service_account_email = data.google_compute_default_service_account.default.email
     }
   }
