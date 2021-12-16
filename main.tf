@@ -7,6 +7,7 @@ provider "google" {
 resource "google_cloud_run_service" "wowcig" {
   name = "wowcig"
   location = "us-central1"
+  autogenerate_revision_name = true
   template {
     metadata {
       annotations = {
@@ -16,7 +17,6 @@ resource "google_cloud_run_service" "wowcig" {
         "run.googleapis.com/client-version" = "367.0.0"
         "run.googleapis.com/execution-environment" = "gen2"
       }
-      name = "wowcig-00015-aaa"
     }
     spec {
       container_concurrency = 1
@@ -45,6 +45,7 @@ resource "google_cloud_run_service" "wowcig" {
 resource "google_cloud_run_service" "wowless" {
   name = "wowless"
   location = "us-central1"
+  autogenerate_revision_name = true
   template {
     metadata {
       annotations = {
@@ -54,7 +55,6 @@ resource "google_cloud_run_service" "wowless" {
         "run.googleapis.com/client-version" = "367.0.0"
         "run.googleapis.com/execution-environment" = "gen2"
       }
-      name = "wowless-00005-aaa"
     }
     spec {
       container_concurrency = 1
@@ -83,6 +83,7 @@ resource "google_cloud_run_service" "wowless" {
 resource "google_cloud_run_service" "www" {
   name = "www"
   location = "us-central1"
+  autogenerate_revision_name = true
   template {
     metadata {
       annotations = {
@@ -92,7 +93,6 @@ resource "google_cloud_run_service" "www" {
         "run.googleapis.com/client-version" = "367.0.0"
         "run.googleapis.com/execution-environment" = "gen1"
       }
-      name = "www-00013-aaa"
     }
     spec {
       container_concurrency = 80
