@@ -4,6 +4,8 @@ provider "google" {
   zone = "us-central1-c"
 }
 
+data "google_compute_default_service_account" "default" {}
+
 resource "google_cloud_run_service" "wowcig" {
   name = "wowcig"
   location = "us-central1"
@@ -20,7 +22,7 @@ resource "google_cloud_run_service" "wowcig" {
     }
     spec {
       container_concurrency = 1
-      service_account_name = "408547218812-compute@developer.gserviceaccount.com"
+      service_account_name = data.google_compute_default_service_account.default.email
       timeout_seconds = 900
       containers {
         args = []
@@ -58,7 +60,7 @@ resource "google_cloud_run_service" "wowless" {
     }
     spec {
       container_concurrency = 1
-      service_account_name = "408547218812-compute@developer.gserviceaccount.com"
+      service_account_name = data.google_compute_default_service_account.default.email
       timeout_seconds = 300
       containers {
         args = []
@@ -96,7 +98,7 @@ resource "google_cloud_run_service" "www" {
     }
     spec {
       container_concurrency = 80
-      service_account_name = "408547218812-compute@developer.gserviceaccount.com"
+      service_account_name = data.google_compute_default_service_account.default.email
       timeout_seconds = 300
       containers {
         args = []
@@ -136,7 +138,7 @@ resource "google_cloud_scheduler_job" "wowcig-classic" {
     uri = "https://wowcig-pxnmni7wma-uc.a.run.app/wowcig?product=wow_classic&db2=all"
     oidc_token {
       audience = "https://wowcig-pxnmni7wma-uc.a.run.app/wowcig?product=wow_classic&db2=all"
-      service_account_email = "408547218812-compute@developer.gserviceaccount.com"
+      service_account_email = data.google_compute_default_service_account.default.email
     }
   }
   retry_config {
@@ -157,7 +159,7 @@ resource "google_cloud_scheduler_job" "wowcig-classic-era" {
     uri = "https://wowcig-pxnmni7wma-uc.a.run.app/wowcig?product=wow_classic_era&db2=all"
     oidc_token {
       audience = "https://wowcig-pxnmni7wma-uc.a.run.app/wowcig?product=wow_classic_era&db2=all"
-      service_account_email = "408547218812-compute@developer.gserviceaccount.com"
+      service_account_email = data.google_compute_default_service_account.default.email
     }
   }
   retry_config {
@@ -178,7 +180,7 @@ resource "google_cloud_scheduler_job" "wowcig-classic-era-ptr" {
     uri = "https://wowcig-pxnmni7wma-uc.a.run.app/wowcig?product=wow_classic_era_ptr&db2=all"
     oidc_token {
       audience = "https://wowcig-pxnmni7wma-uc.a.run.app/wowcig?product=wow_classic_era_ptr&db2=all"
-      service_account_email = "408547218812-compute@developer.gserviceaccount.com"
+      service_account_email = data.google_compute_default_service_account.default.email
     }
   }
   retry_config {
@@ -199,7 +201,7 @@ resource "google_cloud_scheduler_job" "wowcig-classic-ptr" {
     uri = "https://wowcig-pxnmni7wma-uc.a.run.app/wowcig?product=wow_classic_ptr&db2=all"
     oidc_token {
       audience = "https://wowcig-pxnmni7wma-uc.a.run.app/wowcig?product=wow_classic_ptr&db2=all"
-      service_account_email = "408547218812-compute@developer.gserviceaccount.com"
+      service_account_email = data.google_compute_default_service_account.default.email
     }
   }
   retry_config {
@@ -220,7 +222,7 @@ resource "google_cloud_scheduler_job" "wowcig-retail" {
     uri = "https://wowcig-pxnmni7wma-uc.a.run.app/wowcig?product=wow&db2=all"
     oidc_token {
       audience = "https://wowcig-pxnmni7wma-uc.a.run.app/wowcig?product=wow&db2=all"
-      service_account_email = "408547218812-compute@developer.gserviceaccount.com"
+      service_account_email = data.google_compute_default_service_account.default.email
     }
   }
   retry_config {
@@ -241,7 +243,7 @@ resource "google_cloud_scheduler_job" "wowcig-retail-ptr" {
     uri = "https://wowcig-pxnmni7wma-uc.a.run.app/wowcig?product=wowt&db2=all"
     oidc_token {
       audience = "https://wowcig-pxnmni7wma-uc.a.run.app/wowcig?product=wowt&db2=all"
-      service_account_email = "408547218812-compute@developer.gserviceaccount.com"
+      service_account_email = data.google_compute_default_service_account.default.email
     }
   }
   retry_config {
