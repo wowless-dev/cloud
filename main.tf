@@ -135,3 +135,12 @@ resource "google_cloud_run_service" "www" {
     }
   }
 }
+
+resource "google_cloudfunctions_function" "genindex" {
+  name = "genindex"
+  runtime = "python39"
+  entry_point = "genindex"
+  environment_variables = {}
+  labels = {}
+  timeouts {}
+}
