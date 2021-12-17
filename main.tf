@@ -1,3 +1,10 @@
+terraform {
+  backend "gcs" {
+    bucket = "wowless.dev"
+    prefix = "terraform/"
+  }
+}
+
 provider "google" {
   project = "www-wowless-dev"
   region  = "us-central1"
