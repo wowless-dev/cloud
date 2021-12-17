@@ -136,120 +136,41 @@ resource "google_cloudfunctions_function" "genindex" {
   timeouts {}
 }
 
-resource "google_cloud_scheduler_job" "wowcig-classic" {
-  name      = "wowcig-classic"
-  schedule  = "0 2-23/6 * * *"
-  time_zone = "America/Chicago"
-  http_target {
-    http_method = "POST"
-    uri         = "${google_cloud_run_service.wowcig.status[0].url}/wowcig?product=wow_classic&db2=all"
-    oidc_token {
-      audience              = "${google_cloud_run_service.wowcig.status[0].url}/wowcig?product=wow_classic&db2=all"
-      service_account_email = data.google_compute_default_service_account.default.email
+resource "google_cloud_scheduler_job" "wowcig-crons" {
+  for_each = {
+    wowcig-classic = {
+      offset  = 2
+      product = "wow_classic"
+    }
+    wowcig-classic-era = {
+      offset  = 0
+      product = "wow_classic_era"
+    }
+    wowcig-classic-era-ptr = {
+      offset  = 1
+      product = "wow_classic_era_ptr"
+    }
+    wowcig-classic-ptr = {
+      offset  = 3
+      product = "wow_classic_ptr"
+    }
+    wowcig-retail = {
+      offset  = 5
+      product = "wow"
+    }
+    wowcig-retail-ptr = {
+      offset  = 4
+      product = "wowt"
     }
   }
-  retry_config {
-    max_backoff_duration = "3600s"
-    max_doublings        = 5
-    max_retry_duration   = "0s"
-    min_backoff_duration = "5s"
-    retry_count          = 0
-  }
-}
-
-resource "google_cloud_scheduler_job" "wowcig-classic-era" {
-  name      = "wowcig-classic-era"
-  schedule  = "0 0-23/6 * * *"
+  name      = each.key
+  schedule  = "0 ${each.value.offset}-23/6 * * *"
   time_zone = "America/Chicago"
   http_target {
     http_method = "POST"
-    uri         = "${google_cloud_run_service.wowcig.status[0].url}/wowcig?product=wow_classic_era&db2=all"
+    uri         = "${google_cloud_run_service.wowcig.status[0].url}/wowcig?product=${each.value.product}&db2=all"
     oidc_token {
-      audience              = "${google_cloud_run_service.wowcig.status[0].url}/wowcig?product=wow_classic_era&db2=all"
-      service_account_email = data.google_compute_default_service_account.default.email
-    }
-  }
-  retry_config {
-    max_backoff_duration = "3600s"
-    max_doublings        = 5
-    max_retry_duration   = "0s"
-    min_backoff_duration = "5s"
-    retry_count          = 0
-  }
-}
-
-resource "google_cloud_scheduler_job" "wowcig-classic-era-ptr" {
-  name      = "wowcig-classic-era-ptr"
-  schedule  = "0 1-23/6 * * *"
-  time_zone = "America/Chicago"
-  http_target {
-    http_method = "POST"
-    uri         = "${google_cloud_run_service.wowcig.status[0].url}/wowcig?product=wow_classic_era_ptr&db2=all"
-    oidc_token {
-      audience              = "${google_cloud_run_service.wowcig.status[0].url}/wowcig?product=wow_classic_era_ptr&db2=all"
-      service_account_email = data.google_compute_default_service_account.default.email
-    }
-  }
-  retry_config {
-    max_backoff_duration = "3600s"
-    max_doublings        = 5
-    max_retry_duration   = "0s"
-    min_backoff_duration = "5s"
-    retry_count          = 0
-  }
-}
-
-resource "google_cloud_scheduler_job" "wowcig-classic-ptr" {
-  name      = "wowcig-classic-ptr"
-  schedule  = "0 3-23/6 * * *"
-  time_zone = "America/Chicago"
-  http_target {
-    http_method = "POST"
-    uri         = "${google_cloud_run_service.wowcig.status[0].url}/wowcig?product=wow_classic_ptr&db2=all"
-    oidc_token {
-      audience              = "${google_cloud_run_service.wowcig.status[0].url}/wowcig?product=wow_classic_ptr&db2=all"
-      service_account_email = data.google_compute_default_service_account.default.email
-    }
-  }
-  retry_config {
-    max_backoff_duration = "3600s"
-    max_doublings        = 5
-    max_retry_duration   = "0s"
-    min_backoff_duration = "5s"
-    retry_count          = 0
-  }
-}
-
-resource "google_cloud_scheduler_job" "wowcig-retail" {
-  name      = "wowcig-retail"
-  schedule  = "0 5-23/6 * * *"
-  time_zone = "America/Chicago"
-  http_target {
-    http_method = "POST"
-    uri         = "${google_cloud_run_service.wowcig.status[0].url}/wowcig?product=wow&db2=all"
-    oidc_token {
-      audience              = "${google_cloud_run_service.wowcig.status[0].url}/wowcig?product=wow&db2=all"
-      service_account_email = data.google_compute_default_service_account.default.email
-    }
-  }
-  retry_config {
-    max_backoff_duration = "3600s"
-    max_doublings        = 5
-    max_retry_duration   = "0s"
-    min_backoff_duration = "5s"
-    retry_count          = 0
-  }
-}
-
-resource "google_cloud_scheduler_job" "wowcig-retail-ptr" {
-  name      = "wowcig-retail-ptr"
-  schedule  = "0 4-23/6 * * *"
-  time_zone = "America/Chicago"
-  http_target {
-    http_method = "POST"
-    uri         = "${google_cloud_run_service.wowcig.status[0].url}/wowcig?product=wowt&db2=all"
-    oidc_token {
-      audience              = "${google_cloud_run_service.wowcig.status[0].url}/wowcig?product=wowt&db2=all"
+      audience              = "${google_cloud_run_service.wowcig.status[0].url}/wowcig?product=${each.value.product}&db2=all"
       service_account_email = data.google_compute_default_service_account.default.email
     }
   }
