@@ -13,6 +13,12 @@ provider "google" {
 
 data "google_compute_default_service_account" "default" {}
 
+resource "google_artifact_registry_repository" "docker" {
+  provider      = google-beta
+  repository_id = "docker"
+  format        = "DOCKER"
+}
+
 resource "google_cloud_run_service" "wowcig" {
   name                       = "wowcig"
   location                   = "us-central1"
