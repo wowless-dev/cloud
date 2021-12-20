@@ -15,6 +15,11 @@ provider "google" {
 
 data "google_compute_default_service_account" "default" {}
 
+resource "google_service_account" "terraform" {
+  account_id   = "terraform"
+  display_name = "terraform"
+}
+
 resource "google_artifact_registry_repository" "docker" {
   provider      = google-beta
   repository_id = "docker"
