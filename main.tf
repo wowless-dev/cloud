@@ -182,9 +182,10 @@ resource "google_cloud_scheduler_job" "wowcig-crons" {
       product = "wowt"
     }
   }
-  name      = each.key
-  schedule  = "0 ${each.value.offset}-23/6 * * *"
-  time_zone = "America/Chicago"
+  name             = each.key
+  schedule         = "0 ${each.value.offset}-23/6 * * *"
+  time_zone        = "America/Chicago"
+  attempt_deadline = "900s"
   http_target {
     http_method = "POST"
     uri         = "${google_cloud_run_service.wowcig.status[0].url}/wowcig?product=${each.value.product}&db2=all"
