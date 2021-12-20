@@ -1,7 +1,9 @@
 terraform {
-  backend "gcs" {
-    bucket = "wowless.dev"
-    prefix = "terraform/"
+  cloud {
+    organization = "wowless-dev"
+    workspaces {
+      name = "cloud"
+    }
   }
 }
 
