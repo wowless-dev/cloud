@@ -60,7 +60,7 @@ resource "google_cloud_run_service" "wowcig" {
         }
         resources {
           limits = {
-            "cpu"    = "1"
+            "cpu"    = "2"
             "memory" = "8Gi"
           }
           requests = {}
