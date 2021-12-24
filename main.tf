@@ -205,27 +205,27 @@ resource "google_cloud_scheduler_job" "wowcig-crons" {
 
 resource "google_cloud_scheduler_job" "wowless-crons" {
   for_each = {
-    wowcig-classic = {
+    wowless-classic = {
       offset  = 2
       product = "wow_classic"
     }
-    wowcig-classic-era = {
+    wowless-classic-era = {
       offset  = 0
       product = "wow_classic_era"
     }
-    wowcig-classic-era-ptr = {
+    wowless-classic-era-ptr = {
       offset  = 1
       product = "wow_classic_era_ptr"
     }
-    wowcig-classic-ptr = {
+    wowless-classic-ptr = {
       offset  = 3
       product = "wow_classic_ptr"
     }
-    wowcig-retail = {
+    wowless-retail = {
       offset  = 5
       product = "wow"
     }
-    wowcig-retail-ptr = {
+    wowless-retail-ptr = {
       offset  = 4
       product = "wowt"
     }
