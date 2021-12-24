@@ -43,7 +43,7 @@ resource "google_cloud_run_service" "wowcig" {
         "client.knative.dev/user-image"            = "us-central1-docker.pkg.dev/www-wowless-dev/docker/wowcig"
         "run.googleapis.com/client-name"           = "gcloud"
         "run.googleapis.com/client-version"        = "367.0.0"
-        "run.googleapis.com/execution-environment" = "gen2"
+        "run.googleapis.com/execution-environment" = "gen1"
       }
     }
     spec {
