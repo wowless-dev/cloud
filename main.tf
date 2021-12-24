@@ -202,3 +202,51 @@ resource "google_cloud_scheduler_job" "wowcig-crons" {
     retry_count          = 0
   }
 }
+
+resource "google_cloud_scheduler_job" "wowless-crons" {
+  for_each = {
+    wowcig-classic = {
+      offset  = 2
+      product = "wow_classic"
+    }
+    wowcig-classic-era = {
+      offset  = 0
+      product = "wow_classic_era"
+    }
+    wowcig-classic-era-ptr = {
+      offset  = 1
+      product = "wow_classic_era_ptr"
+    }
+    wowcig-classic-ptr = {
+      offset  = 3
+      product = "wow_classic_ptr"
+    }
+    wowcig-retail = {
+      offset  = 5
+      product = "wow"
+    }
+    wowcig-retail-ptr = {
+      offset  = 4
+      product = "wowt"
+    }
+  }
+  name             = each.key
+  schedule         = "${each.value.offset}-59/6 * * * *"
+  time_zone        = "America/Chicago"
+  attempt_deadline = "50s"
+  http_target {
+    http_method = "POST"
+    uri         = "${google_cloud_run_service.wowless.status[0].url}/wowless?product=${each.value.product}&loglevel=4"
+    oidc_token {
+      audience              = "${google_cloud_run_service.wowless.status[0].url}/wowless?product=${each.value.product}&loglevel=4"
+      service_account_email = data.google_compute_default_service_account.default.email
+    }
+  }
+  retry_config {
+    max_backoff_duration = "3600s"
+    max_doublings        = 5
+    max_retry_duration   = "0s"
+    min_backoff_duration = "5s"
+    retry_count          = 0
+  }
+}
