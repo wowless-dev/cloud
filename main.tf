@@ -238,7 +238,7 @@ resource "google_cloud_scheduler_job" "wowless-crons" {
     http_method = "POST"
     uri         = "${google_cloud_run_service.wowless.status[0].url}/wowless?product=${each.value.product}&loglevel=4"
     oidc_token {
-      audience              = "${google_cloud_run_service.wowless.status[0].url}/wowless?product=${each.value.product}&loglevel=4"
+      audience              = "${google_cloud_run_service.wowless.status[0].url}/wowless?product=${each.value.product}&loglevel=0"
       service_account_email = data.google_compute_default_service_account.default.email
     }
   }
