@@ -146,6 +146,16 @@ resource "google_cloud_run_service" "www" {
   }
 }
 
+resource "google_cloudfunctions_function" "depickle" {
+  name                  = "depickle"
+  runtime               = "python39"
+  entry_point           = "depickle"
+  environment_variables = {}
+  labels                = {}
+  trigger_http          = true
+  timeouts {}
+}
+
 resource "google_cloudfunctions_function" "genindex" {
   name                  = "genindex"
   runtime               = "python39"
