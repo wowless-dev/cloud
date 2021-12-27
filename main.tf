@@ -15,6 +15,17 @@ provider "google" {
 
 data "google_compute_default_service_account" "default" {}
 
+resource "google_service_account" "github" {
+  account_id   = "github"
+  display_name = "github"
+}
+
+resource "google_project_iam_member" "github-editor" {
+  project = "www-wowless-dev"
+  role    = "roles/editor"
+  member  = "serviceAccount:${google_service_account.github.email}"
+}
+
 resource "google_service_account" "terraform" {
   account_id   = "terraform"
   display_name = "terraform"
