@@ -37,6 +37,12 @@ resource "google_project_iam_member" "terraform-editor" {
   member  = "serviceAccount:${google_service_account.terraform.email}"
 }
 
+resource "google_project_iam_member" "terraform-iam-security-admin" {
+  project = "www-wowless-dev"
+  role    = "roles/iam.securityAdmin"
+  member  = "serviceAccount:${google_service_account.terraform.email}"
+}
+
 resource "google_artifact_registry_repository" "docker" {
   provider      = google-beta
   repository_id = "docker"
