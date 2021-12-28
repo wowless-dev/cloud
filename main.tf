@@ -263,6 +263,17 @@ resource "google_cloud_scheduler_job" "wowcig-crons" {
   }
 }
 
+resource "google_service_account" "wowless-invoker" {
+  account_id   = "wowless-invoker"
+  display_name = "wowless-invoker"
+}
+
+resource "google_project_iam_member" "wowless-invoker-run-invoker" {
+  project = "www-wowless-dev"
+  role    = "roles/run.invoker"
+  member  = "serviceAccount:${google_service_account.wowless-invoker.email}"
+}
+
 resource "google_cloud_scheduler_job" "wowless-crons" {
   for_each = {
     wowless-classic = {
@@ -298,8 +309,8 @@ resource "google_cloud_scheduler_job" "wowless-crons" {
     http_method = "POST"
     uri         = "${google_cloud_run_service.wowless.status[0].url}/wowless?product=${each.value.product}&loglevel=1"
     oidc_token {
-      audience              = "${google_cloud_run_service.wowless.status[0].url}/wowless?product=${each.value.product}&loglevel=1"
-      service_account_email = data.google_compute_default_service_account.default.email
+      audience              = ""
+      service_account_email = google_service_account.wowless-invoker.email
     }
   }
   retry_config {
