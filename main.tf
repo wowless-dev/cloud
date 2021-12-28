@@ -206,12 +206,38 @@ resource "google_cloudfunctions_function" "depickle" {
   timeouts {}
 }
 
+resource "google_service_account" "genindex-runner" {
+  account_id   = "genindex-runner"
+  display_name = "genindex-runner"
+}
+
+resource "google_project_iam_member" "genindex-runner-storage-object-creator" {
+  project = "www-wowless-dev"
+  role    = "roles/storage.objectCreator"
+  member  = "serviceAccount:${google_service_account.genindex-runner.email}"
+}
+
+resource "google_project_iam_member" "genindex-runner-storage-object-viewer" {
+  project = "www-wowless-dev"
+  role    = "roles/storage.objectViewer"
+  member  = "serviceAccount:${google_service_account.genindex-runner.email}"
+}
+
 resource "google_cloudfunctions_function" "genindex" {
   name                  = "genindex"
   runtime               = "python39"
   entry_point           = "genindex"
   environment_variables = {}
   labels                = {}
+  available_memory_mb   = 256
+  event_trigger {
+    event_type = "google.storage.object.finalize"
+    failure_policy {
+      retry = "true"
+    }
+    resource = "projects/_/buckets/wowless.dev"
+  }
+  service_account_email = google_service_account.genindex-runner.email
   timeouts {}
 }
 
