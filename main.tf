@@ -281,4 +281,17 @@ resource "google_cloud_scheduler_job" "wowless-crons" {
 resource "google_cloud_tasks_queue" "addon-downloads" {
   name     = "addon-downloads"
   location = "us-central1"
+  rate_limits {
+    max_concurrent_dispatches = 1
+    max_dispatches_per_second = 1
+  }
+
+  retry_config {
+    max_attempts  = 5
+    max_backoff   = "3600s"
+    max_doublings = 16
+    min_backoff   = "0.100s"
+  }
+
+  timeouts {}
 }
