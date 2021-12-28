@@ -196,6 +196,17 @@ resource "google_cloud_run_service" "www" {
   }
 }
 
+resource "google_service_account" "depickle-runner" {
+  account_id   = "depickle-runner"
+  display_name = "depickle-runner"
+}
+
+resource "google_project_iam_member" "depickle-runner-storage-object-creator" {
+  project = "www-wowless-dev"
+  role    = "roles/storage.objectCreator"
+  member  = "serviceAccount:${google_service_account.depickle-runner.email}"
+}
+
 resource "google_cloudfunctions_function" "depickle" {
   name                  = "depickle"
   runtime               = "python39"
