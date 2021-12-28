@@ -87,6 +87,11 @@ resource "google_cloud_run_service" "wowcig" {
   }
 }
 
+resource "google_service_account" "wowless-runner" {
+  account_id   = "wowless-runner"
+  display_name = "wowless-runner"
+}
+
 resource "google_cloud_run_service" "wowless" {
   name                       = "wowless"
   location                   = "us-central1"
@@ -103,7 +108,7 @@ resource "google_cloud_run_service" "wowless" {
     }
     spec {
       container_concurrency = 1
-      service_account_name  = data.google_compute_default_service_account.default.email
+      service_account_name  = google_service_account.wowless-runner.email
       timeout_seconds       = 300
       containers {
         args    = []
