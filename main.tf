@@ -54,15 +54,9 @@ resource "google_service_account" "wowcig-runner" {
   display_name = "wowcig-runner"
 }
 
-resource "google_project_iam_member" "wowcig-runner-storage-object-creator" {
+resource "google_project_iam_member" "wowcig-runner-storage-object-admin" {
   project = "www-wowless-dev"
-  role    = "roles/storage.objectCreator"
-  member  = "serviceAccount:${google_service_account.wowcig-runner.email}"
-}
-
-resource "google_project_iam_member" "wowcig-runner-storage-object-viewer" {
-  project = "www-wowless-dev"
-  role    = "roles/storage.objectViewer"
+  role    = "roles/storage.objectAdmin"
   member  = "serviceAccount:${google_service_account.wowcig-runner.email}"
 }
 
