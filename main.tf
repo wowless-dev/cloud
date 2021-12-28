@@ -92,6 +92,18 @@ resource "google_service_account" "wowless-runner" {
   display_name = "wowless-runner"
 }
 
+resource "google_project_iam_member" "wowless-runner-storage-object-creator" {
+  project = "www-wowless-dev"
+  role    = "roles/storage.objectCreator"
+  member  = "serviceAccount:${google_service_account.wowless-runner.email}"
+}
+
+resource "google_project_iam_member" "wowless-runner-storage-object-viewer" {
+  project = "www-wowless-dev"
+  role    = "roles/storage.objectViewer"
+  member  = "serviceAccount:${google_service_account.wowless-runner.email}"
+}
+
 resource "google_cloud_run_service" "wowless" {
   name                       = "wowless"
   location                   = "us-central1"
