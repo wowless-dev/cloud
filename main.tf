@@ -277,3 +277,8 @@ resource "google_cloud_scheduler_job" "wowless-crons" {
     retry_count          = 0
   }
 }
+
+resource "google_cloud_tasks_queue" "addon-downloads" {
+  name     = "addon-downloads"
+  location = "us-central1"
+}
