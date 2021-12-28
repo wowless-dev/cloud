@@ -49,6 +49,23 @@ resource "google_artifact_registry_repository" "docker" {
   format        = "DOCKER"
 }
 
+resource "google_service_account" "wowcig-runner" {
+  account_id   = "wowcig-runner"
+  display_name = "wowcig-runner"
+}
+
+resource "google_project_iam_member" "wowcig-runner-storage-object-creator" {
+  project = "www-wowless-dev"
+  role    = "roles/storage.objectCreator"
+  member  = "serviceAccount:${google_service_account.wowcig-runner.email}"
+}
+
+resource "google_project_iam_member" "wowcig-runner-storage-object-viewer" {
+  project = "www-wowless-dev"
+  role    = "roles/storage.objectViewer"
+  member  = "serviceAccount:${google_service_account.wowcig-runner.email}"
+}
+
 resource "google_cloud_run_service" "wowcig" {
   name                       = "wowcig"
   location                   = "us-central1"
@@ -65,7 +82,7 @@ resource "google_cloud_run_service" "wowcig" {
     }
     spec {
       container_concurrency = 1
-      service_account_name  = data.google_compute_default_service_account.default.email
+      service_account_name  = google_service_account.wowcig-runner.email
       timeout_seconds       = 900
       containers {
         args    = []
