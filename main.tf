@@ -125,6 +125,11 @@ resource "google_cloud_run_service" "wowless" {
   }
 }
 
+resource "google_service_account" "www-runner" {
+  account_id   = "www-runner"
+  display_name = "www-runner"
+}
+
 resource "google_cloud_run_service" "www" {
   name                       = "www"
   location                   = "us-central1"
