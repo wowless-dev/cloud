@@ -215,6 +215,17 @@ resource "google_cloudfunctions_function" "genindex" {
   timeouts {}
 }
 
+resource "google_service_account" "wowcig-invoker" {
+  account_id   = "wowcig-invoker"
+  display_name = "wowcig-invoker"
+}
+
+resource "google_project_iam_member" "wowcig-invoker-run-invoker" {
+  project = "www-wowless-dev"
+  role    = "roles/run.invoker"
+  member  = "serviceAccount:${google_service_account.wowcig-invoker.email}"
+}
+
 resource "google_cloud_scheduler_job" "wowcig-crons" {
   for_each = {
     wowcig-classic = {
@@ -250,8 +261,8 @@ resource "google_cloud_scheduler_job" "wowcig-crons" {
     http_method = "POST"
     uri         = "${google_cloud_run_service.wowcig.status[0].url}/wowcig?product=${each.value.product}&db2=all"
     oidc_token {
-      audience              = "${google_cloud_run_service.wowcig.status[0].url}/wowcig?product=${each.value.product}&db2=all"
-      service_account_email = data.google_compute_default_service_account.default.email
+      audience              = ""
+      service_account_email = google_service_account.wowcig-runner.email
     }
   }
   retry_config {
