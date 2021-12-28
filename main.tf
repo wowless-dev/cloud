@@ -146,7 +146,7 @@ resource "google_cloud_run_service" "www" {
     }
     spec {
       container_concurrency = 80
-      service_account_name  = data.google_compute_default_service_account.default.email
+      service_account_name  = google_service_account.www-runner.email
       timeout_seconds       = 300
       containers {
         args    = []
