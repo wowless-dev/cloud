@@ -395,13 +395,13 @@ resource "google_service_account" "addon-downloader-cron-runner" {
 resource "google_project_iam_member" "addon-downloader-cron-runner-cloud-tasks-enqueuer" {
   project = "www-wowless-dev"
   role    = "roles/cloudtasks.enqueuer"
-  member  = "serviceAccount:${google_service_account.genindex-runner.email}"
+  member  = "serviceAccount:${google_service_account.addon-downloader-cron-runner.email}"
 }
 
 resource "google_project_iam_member" "addon-downloader-cron-runner-cloud-tasks-viewer" {
   project = "www-wowless-dev"
   role    = "roles/cloudtasks.viewer"
-  member  = "serviceAccount:${google_service_account.genindex-runner.email}"
+  member  = "serviceAccount:${google_service_account.addon-downloader-cron-runner.email}"
 }
 
 resource "google_project_iam_member" "addon-downloader-cron-runner-storage-object-viewer" {
