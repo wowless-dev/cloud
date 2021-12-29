@@ -201,9 +201,9 @@ resource "google_service_account" "depickle-runner" {
   display_name = "depickle-runner"
 }
 
-resource "google_project_iam_member" "depickle-runner-storage-object-creator" {
+resource "google_project_iam_member" "depickle-runner-storage-object-admin" {
   project = "www-wowless-dev"
-  role    = "roles/storage.objectCreator"
+  role    = "roles/storage.objectAdmin"
   member  = "serviceAccount:${google_service_account.depickle-runner.email}"
 }
 
