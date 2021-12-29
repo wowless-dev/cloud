@@ -404,9 +404,9 @@ resource "google_project_iam_member" "addon-downloader-cron-runner-cloud-tasks-v
   member  = "serviceAccount:${google_service_account.addon-downloader-cron-runner.email}"
 }
 
-resource "google_project_iam_member" "addon-downloader-cron-runner-iam-service-accounts-act-as" {
+resource "google_project_iam_member" "addon-downloader-cron-runner-iam-service-account-user" {
   project = "www-wowless-dev"
-  role    = "roles/iam.serviceAccounts.actAs"
+  role    = "roles/iam.serviceAccountUser"
   member  = "serviceAccount:${google_service_account.addon-downloader-cron-runner.email}"
 }
 
