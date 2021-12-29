@@ -465,3 +465,14 @@ resource "google_cloud_tasks_queue" "wowless" {
   }
   timeouts {}
 }
+
+resource "google_service_account" "wowless-cron-runner" {
+  account_id   = "wowless-cron-runner"
+  display_name = "wowless-cron-runner"
+}
+
+resource "google_project_iam_member" "wowless-cron-runner-storage-object-viewer" {
+  project = "www-wowless-dev"
+  role    = "roles/storage.objectViewer"
+  member  = "serviceAccount:${google_service_account.wowless-cron-runner.email}"
+}
