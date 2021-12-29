@@ -449,3 +449,19 @@ resource "google_cloudfunctions_function" "addon-downloader" {
   service_account_email = google_service_account.addon-downloader-runner.email
   timeouts {}
 }
+
+resource "google_cloud_tasks_queue" "wowless" {
+  name     = "wowless"
+  location = "us-central1"
+  rate_limits {
+    max_concurrent_dispatches = 10
+    max_dispatches_per_second = 10
+  }
+  retry_config {
+    max_attempts  = 5
+    max_backoff   = "3600s"
+    max_doublings = 16
+    min_backoff   = "0.100s"
+  }
+  timeouts {}
+}
