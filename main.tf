@@ -116,7 +116,7 @@ resource "google_cloud_run_service" "wowless" {
   template {
     metadata {
       annotations = {
-        "autoscaling.knative.dev/maxScale"         = "100"
+        "autoscaling.knative.dev/maxScale"         = "1000"
         "client.knative.dev/user-image"            = "us-central1-docker.pkg.dev/www-wowless-dev/docker/wowless"
         "run.googleapis.com/client-name"           = "gcloud"
         "run.googleapis.com/client-version"        = "367.0.0"
@@ -454,8 +454,8 @@ resource "google_cloud_tasks_queue" "wowless" {
   name     = "wowless"
   location = "us-central1"
   rate_limits {
-    max_concurrent_dispatches = 10
-    max_dispatches_per_second = 10
+    max_concurrent_dispatches = 1000
+    max_dispatches_per_second = 1000
   }
   retry_config {
     max_attempts  = 5
