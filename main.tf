@@ -404,6 +404,12 @@ resource "google_project_iam_member" "addon-downloader-cron-runner-cloud-tasks-v
   member  = "serviceAccount:${google_service_account.addon-downloader-cron-runner.email}"
 }
 
+resource "google_project_iam_member" "addon-downloader-cron-runner-iam-service-accounts-act-as" {
+  project = "www-wowless-dev"
+  role    = "roles/iam.serviceAccounts.actAs"
+  member  = "serviceAccount:${google_service_account.addon-downloader-cron-runner.email}"
+}
+
 resource "google_project_iam_member" "addon-downloader-cron-runner-storage-object-viewer" {
   project = "www-wowless-dev"
   role    = "roles/storage.objectViewer"
@@ -420,6 +426,17 @@ resource "google_cloudfunctions_function" "addon-downloader-cron" {
   trigger_http          = true
   service_account_email = google_service_account.addon-downloader-cron-runner.email
   timeouts {}
+}
+
+resource "google_service_account" "addon-downloader-invoker" {
+  account_id   = "addon-downloader-invoker"
+  display_name = "addon-downloader-invoker"
+}
+
+resource "google_project_iam_member" "addon-downloader-invoker-cloud-functions-invoker" {
+  project = "www-wowless-dev"
+  role    = "roles/cloudfunctions.invoker"
+  member  = "serviceAccount:${google_service_account.addon-downloader-invoker.email}"
 }
 
 resource "google_service_account" "addon-downloader-runner" {
