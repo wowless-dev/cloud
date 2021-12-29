@@ -214,6 +214,7 @@ resource "google_cloudfunctions_function" "depickle" {
   environment_variables = {}
   labels                = {}
   trigger_http          = true
+  service_account_email = google_service_account.depickle-runner.email
   timeouts {}
 }
 
