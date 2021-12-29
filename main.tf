@@ -421,3 +421,14 @@ resource "google_cloudfunctions_function" "addon-downloader-cron" {
   service_account_email = google_service_account.addon-downloader-cron-runner.email
   timeouts {}
 }
+
+resource "google_service_account" "addon-downloader-runner" {
+  account_id   = "addon-downloader-runner"
+  display_name = "addon-downloader-runner"
+}
+
+resource "google_project_iam_member" "addon-downloader-runner-storage-object-admin" {
+  project = "www-wowless-dev"
+  role    = "roles/storage.objectAdmin"
+  member  = "serviceAccount:${google_service_account.addon-downloader-runner.email}"
+}
