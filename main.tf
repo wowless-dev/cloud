@@ -408,3 +408,15 @@ resource "google_project_iam_member" "addon-downloader-cron-runner-storage-objec
   role    = "roles/storage.objectViewer"
   member  = "serviceAccount:${google_service_account.addon-downloader-cron-runner.email}"
 }
+
+resource "google_cloudfunctions_function" "addon-downloader-cron" {
+  name                  = "addon-downloader-cron"
+  runtime               = "python39"
+  entry_point           = "publish"
+  environment_variables = {}
+  labels                = {}
+  available_memory_mb   = 1024
+  trigger_http          = true
+  service_account_email = google_service_account.addon-downloader-cron-runner.email
+  timeouts {}
+}
