@@ -223,15 +223,9 @@ resource "google_service_account" "genindex-runner" {
   display_name = "genindex-runner"
 }
 
-resource "google_project_iam_member" "genindex-runner-storage-object-creator" {
+resource "google_project_iam_member" "genindex-runner-storage-object-admin" {
   project = "www-wowless-dev"
-  role    = "roles/storage.objectCreator"
-  member  = "serviceAccount:${google_service_account.genindex-runner.email}"
-}
-
-resource "google_project_iam_member" "genindex-runner-storage-object-viewer" {
-  project = "www-wowless-dev"
-  role    = "roles/storage.objectViewer"
+  role    = "roles/storage.objectAdmin"
   member  = "serviceAccount:${google_service_account.genindex-runner.email}"
 }
 
