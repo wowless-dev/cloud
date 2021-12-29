@@ -300,7 +300,7 @@ resource "google_cloud_scheduler_job" "wowcig-crons" {
     uri         = "${google_cloud_run_service.wowcig.status[0].url}/wowcig?product=${each.value.product}&db2=all"
     oidc_token {
       audience              = ""
-      service_account_email = google_service_account.wowcig-runner.email
+      service_account_email = google_service_account.wowcig-invoker.email
     }
   }
   retry_config {
