@@ -103,15 +103,9 @@ resource "google_service_account" "wowless-runner" {
   display_name = "wowless-runner"
 }
 
-resource "google_project_iam_member" "wowless-runner-storage-object-creator" {
+resource "google_project_iam_member" "wowless-runner-storage-object-admin" {
   project = "www-wowless-dev"
-  role    = "roles/storage.objectCreator"
-  member  = "serviceAccount:${google_service_account.wowless-runner.email}"
-}
-
-resource "google_project_iam_member" "wowless-runner-storage-object-viewer" {
-  project = "www-wowless-dev"
-  role    = "roles/storage.objectViewer"
+  role    = "roles/storage.objectAdmin"
   member  = "serviceAccount:${google_service_account.wowless-runner.email}"
 }
 
