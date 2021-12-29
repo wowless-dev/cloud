@@ -455,7 +455,7 @@ resource "google_cloud_tasks_queue" "wowless" {
   location = "us-central1"
   rate_limits {
     max_concurrent_dispatches = 1000
-    max_dispatches_per_second = 1000
+    max_dispatches_per_second = 500
   }
   retry_config {
     max_attempts  = 5
