@@ -471,6 +471,24 @@ resource "google_service_account" "wowless-cron-runner" {
   display_name = "wowless-cron-runner"
 }
 
+resource "google_project_iam_member" "wowless-cron-runner-cloud-tasks-enqueuer" {
+  project = "www-wowless-dev"
+  role    = "roles/cloudtasks.enqueuer"
+  member  = "serviceAccount:${google_service_account.wowless-cron-runner.email}"
+}
+
+resource "google_project_iam_member" "wowless-cron-runner-cloud-tasks-viewer" {
+  project = "www-wowless-dev"
+  role    = "roles/cloudtasks.viewer"
+  member  = "serviceAccount:${google_service_account.wowless-cron-runner.email}"
+}
+
+resource "google_project_iam_member" "wowless-cron-runner-iam-service-account-user" {
+  project = "www-wowless-dev"
+  role    = "roles/iam.serviceAccountUser"
+  member  = "serviceAccount:${google_service_account.wowless-cron-runner.email}"
+}
+
 resource "google_project_iam_member" "wowless-cron-runner-storage-object-viewer" {
   project = "www-wowless-dev"
   role    = "roles/storage.objectViewer"
