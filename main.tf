@@ -432,3 +432,15 @@ resource "google_project_iam_member" "addon-downloader-runner-storage-object-adm
   role    = "roles/storage.objectAdmin"
   member  = "serviceAccount:${google_service_account.addon-downloader-runner.email}"
 }
+
+resource "google_cloudfunctions_function" "addon-downloader" {
+  name                  = "addon-downloader"
+  runtime               = "python39"
+  entry_point           = "handler"
+  environment_variables = {}
+  labels                = {}
+  available_memory_mb   = 128
+  trigger_http          = true
+  service_account_email = google_service_account.addon-downloader-runner.email
+  timeouts {}
+}
