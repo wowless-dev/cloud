@@ -444,7 +444,7 @@ resource "google_cloudfunctions_function" "addon-downloader" {
   entry_point           = "handler"
   environment_variables = {}
   labels                = {}
-  available_memory_mb   = 256
+  available_memory_mb   = 1024
   trigger_http          = true
   service_account_email = google_service_account.addon-downloader-runner.email
   timeouts {}
