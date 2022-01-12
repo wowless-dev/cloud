@@ -94,6 +94,18 @@ resource "google_compute_target_https_proxy" "frontend" {
   url_map          = google_compute_url_map.frontend.id
 }
 
+resource "google_compute_global_address" "frontend" {
+  name = "frontend"
+}
+
+resource "google_compute_global_forwarding_rule" "frontend" {
+  name       = "frontend"
+  labels     = {}
+  target     = google_compute_target_https_proxy.frontend.id
+  ip_address = google_compute_global_address.frontend.id
+  port_range = "443"
+}
+
 resource "google_service_account" "wowcig-runner" {
   account_id   = "wowcig-runner"
   display_name = "wowcig-runner"
