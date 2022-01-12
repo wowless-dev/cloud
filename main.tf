@@ -106,6 +106,29 @@ resource "google_compute_global_forwarding_rule" "frontend" {
   port_range = "443"
 }
 
+resource "google_compute_url_map" "frontend-redirect" {
+  name        = "frontend-redirect"
+  description = "Automatically generated HTTP to HTTPS redirect for the frontend forwarding rule"
+  default_url_redirect {
+    redirect_response_code = "MOVED_PERMANENTLY_DEFAULT"
+    https_redirect         = true
+    strip_query            = false
+  }
+}
+
+resource "google_compute_target_http_proxy" "frontend-redirect" {
+  name    = "frontend-target-proxy"
+  url_map = google_compute_url_map.frontend-redirect.id
+}
+
+resource "google_compute_global_forwarding_rule" "frontend-redirect" {
+  name       = "frontend-forwarding-rule"
+  labels     = {}
+  target     = google_compute_target_http_proxy.frontend-redirect.id
+  ip_address = google_compute_global_address.frontend.id
+  port_range = "80"
+}
+
 resource "google_service_account" "wowcig-runner" {
   account_id   = "wowcig-runner"
   display_name = "wowcig-runner"
