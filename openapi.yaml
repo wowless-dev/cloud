@@ -1,0 +1,6 @@
+swagger: "2.0"
+info:
+  title: Wowless API
+  version: 0.0.1
+basePath: /v0
+paths: {}

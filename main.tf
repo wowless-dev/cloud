@@ -145,6 +145,38 @@ resource "google_api_gateway_api" "api" {
   api_id   = "api"
 }
 
+resource "google_service_account" "api-invoker" {
+  account_id   = "api-invoker"
+  display_name = "api-invoker"
+}
+
+resource "google_project_iam_member" "api-invoker-run-invoker" {
+  project = "www-wowless-dev"
+  role    = "roles/run.invoker"
+  member  = "serviceAccount:${google_service_account.api-invoker.email}"
+}
+
+resource "google_api_gateway_api_config" "api" {
+  provider      = google-beta
+  project       = "www-wowless-dev"
+  api           = google_api_gateway_api.api.api_id
+  api_config_id = "api"
+  openapi_documents {
+    document {
+      path     = "spec.yaml"
+      contents = filebase64("openapi.yaml")
+    }
+  }
+  gateway_config {
+    backend_config {
+      google_service_account = google_service_account.api-invoker.email
+    }
+  }
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
 resource "google_service_account" "wowcig-runner" {
   account_id   = "wowcig-runner"
   display_name = "wowcig-runner"
