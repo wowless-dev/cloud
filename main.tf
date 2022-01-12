@@ -71,6 +71,13 @@ resource "google_storage_bucket" "www" {
   }
 }
 
+resource "google_compute_managed_ssl_certificate" "certificate" {
+  name = "certificate"
+  managed {
+    domains = ["wowless.dev"]
+  }
+}
+
 resource "google_service_account" "wowcig-runner" {
   account_id   = "wowcig-runner"
   display_name = "wowcig-runner"
