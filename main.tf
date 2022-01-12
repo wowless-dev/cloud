@@ -143,47 +143,6 @@ resource "google_cloud_run_service" "wowless" {
   }
 }
 
-resource "google_service_account" "www-runner" {
-  account_id   = "www-runner"
-  display_name = "www-runner"
-}
-
-resource "google_cloud_run_service" "www" {
-  name                       = "www"
-  location                   = "us-central1"
-  autogenerate_revision_name = true
-  template {
-    metadata {
-      annotations = {
-        "autoscaling.knative.dev/maxScale"         = "4"
-        "client.knative.dev/user-image"            = "us-central1-docker.pkg.dev/www-wowless-dev/docker/www"
-        "run.googleapis.com/execution-environment" = "gen1"
-      }
-    }
-    spec {
-      container_concurrency = 80
-      service_account_name  = google_service_account.www-runner.email
-      timeout_seconds       = 300
-      containers {
-        args    = []
-        command = []
-        image   = "us-central1-docker.pkg.dev/www-wowless-dev/docker/www"
-        ports {
-          container_port = 8080
-          name           = "http1"
-        }
-        resources {
-          limits = {
-            "cpu"    = "1000m"
-            "memory" = "512Mi"
-          }
-          requests = {}
-        }
-      }
-    }
-  }
-}
-
 resource "google_service_account" "depickle-runner" {
   account_id   = "depickle-runner"
   display_name = "depickle-runner"
