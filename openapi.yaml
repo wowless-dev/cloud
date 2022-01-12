@@ -9,6 +9,8 @@ paths:
   /moo:
     get:
       operationId: getMoo
+      x-google-backend:
+        address: https://wowless-pxnmni7wma-uc.a.run.app/wowless?product=wow_classic_era
       responses:
         200:
           description: OK
