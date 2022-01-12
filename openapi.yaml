@@ -3,4 +3,6 @@ info:
   title: Wowless API
   version: 0.0.1
 basePath: /v0
+schemes:
+- https
 paths: {}
