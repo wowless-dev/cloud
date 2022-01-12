@@ -141,6 +141,7 @@ resource "google_compute_global_forwarding_rule" "frontend-redirect" {
 
 resource "google_api_gateway_api" "api" {
   provider = google-beta
+  project  = "www-wowless-dev"
   api_id   = "api"
 }
 
