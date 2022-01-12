@@ -8,6 +8,7 @@ schemes:
 paths:
   /moo:
     get:
+      operationId: getMoo
       responses:
         200:
           description: OK
