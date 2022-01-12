@@ -5,4 +5,9 @@ info:
 basePath: /v0
 schemes:
 - https
-paths: {}
+paths:
+  /moo:
+    get:
+      responses:
+        200:
+          description: OK
