@@ -69,8 +69,6 @@ resource "google_cloud_run_service" "wowcig" {
       annotations = {
         "autoscaling.knative.dev/maxScale"         = "1"
         "client.knative.dev/user-image"            = "us-central1-docker.pkg.dev/www-wowless-dev/docker/wowcig"
-        "run.googleapis.com/client-name"           = "gcloud"
-        "run.googleapis.com/client-version"        = "367.0.0"
         "run.googleapis.com/execution-environment" = "gen1"
       }
     }
@@ -118,8 +116,6 @@ resource "google_cloud_run_service" "wowless" {
       annotations = {
         "autoscaling.knative.dev/maxScale"         = "1000"
         "client.knative.dev/user-image"            = "us-central1-docker.pkg.dev/www-wowless-dev/docker/wowless"
-        "run.googleapis.com/client-name"           = "gcloud"
-        "run.googleapis.com/client-version"        = "367.0.0"
         "run.googleapis.com/execution-environment" = "gen2"
       }
     }
@@ -161,8 +157,6 @@ resource "google_cloud_run_service" "www" {
       annotations = {
         "autoscaling.knative.dev/maxScale"         = "4"
         "client.knative.dev/user-image"            = "us-central1-docker.pkg.dev/www-wowless-dev/docker/www"
-        "run.googleapis.com/client-name"           = "gcloud"
-        "run.googleapis.com/client-version"        = "367.0.0"
         "run.googleapis.com/execution-environment" = "gen1"
       }
     }
