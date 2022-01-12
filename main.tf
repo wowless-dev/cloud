@@ -139,6 +139,11 @@ resource "google_compute_global_forwarding_rule" "frontend-redirect" {
   port_range = "80"
 }
 
+resource "google_api_gateway_api" "api" {
+  provider = google-beta
+  api_id   = "api"
+}
+
 resource "google_service_account" "wowcig-runner" {
   account_id   = "wowcig-runner"
   display_name = "wowcig-runner"
