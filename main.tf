@@ -49,6 +49,19 @@ resource "google_artifact_registry_repository" "docker" {
   format        = "DOCKER"
 }
 
+resource "google_storage_bucket" "www" {
+  name                        = "www.wowless.dev"
+  location                    = "US"
+  uniform_bucket_level_access = true
+  versioning {
+    enabled = true
+  }
+  website {
+    main_page_suffix = "index.html"
+    not_found_page   = "404.txt"
+  }
+}
+
 resource "google_service_account" "wowcig-runner" {
   account_id   = "wowcig-runner"
   display_name = "wowcig-runner"
