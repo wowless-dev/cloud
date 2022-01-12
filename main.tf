@@ -78,6 +78,22 @@ resource "google_compute_managed_ssl_certificate" "certificate" {
   }
 }
 
+resource "google_compute_backend_bucket" "www" {
+  name        = "www"
+  bucket_name = google_storage_bucket.www.name
+}
+
+resource "google_compute_url_map" "frontend" {
+  name            = "frontend"
+  default_service = google_compute_backend_bucket.www.id
+}
+
+resource "google_compute_target_https_proxy" "frontend" {
+  name             = "frontend-target-proxy"
+  ssl_certificates = [google_compute_managed_ssl_certificate.certificate.id]
+  url_map          = google_compute_url_map.frontend.id
+}
+
 resource "google_service_account" "wowcig-runner" {
   account_id   = "wowcig-runner"
   display_name = "wowcig-runner"
