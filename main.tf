@@ -49,6 +49,15 @@ resource "google_artifact_registry_repository" "docker" {
   format        = "DOCKER"
 }
 
+resource "google_storage_bucket" "backend" {
+  name                        = "wowless.dev"
+  location                    = "US"
+  uniform_bucket_level_access = true
+  versioning {
+    enabled = true
+  }
+}
+
 resource "google_storage_bucket" "www" {
   name                        = "www.wowless.dev"
   location                    = "US"
