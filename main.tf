@@ -13,7 +13,17 @@ provider "google" {
   zone    = "us-central1-c"
 }
 
-data "google_compute_default_service_account" "default" {}
+resource "google_project_service" "apigateway" {
+  service = "apigateway.googleapis.com"
+}
+
+resource "google_project_service" "servicecontrol" {
+  service = "servicecontrol.googleapis.com"
+}
+
+resource "google_project_service" "servicemanagement" {
+  service = "servicemanagement.googleapis.com"
+}
 
 resource "google_service_account" "github" {
   account_id   = "github"
