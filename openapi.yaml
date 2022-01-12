@@ -1,6 +1,6 @@
 swagger: "2.0"
 info:
-  title: Wowless API
+  title: api Wowless API
   version: 0.0.1
 basePath: /v0
 schemes:
