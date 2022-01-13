@@ -240,6 +240,7 @@ resource "google_cloud_run_service" "wowless" {
         "autoscaling.knative.dev/maxScale"         = "1000"
         "client.knative.dev/user-image"            = "us-central1-docker.pkg.dev/www-wowless-dev/docker/wowless"
         "run.googleapis.com/execution-environment" = "gen2"
+        "run.googleapis.com/ingress"               = "internal-and-cloud-load-balancing"
       }
     }
     spec {
