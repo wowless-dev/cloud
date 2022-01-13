@@ -598,3 +598,15 @@ resource "google_project_iam_member" "api-runner-storage-object-admin" {
   role    = "roles/storage.objectAdmin"
   member  = "serviceAccount:${google_service_account.api-runner.email}"
 }
+
+resource "google_cloudfunctions_function" "api" {
+  name                  = "api"
+  runtime               = "python39"
+  entry_point           = "api"
+  environment_variables = {}
+  labels                = {}
+  available_memory_mb   = 256
+  trigger_http          = true
+  service_account_email = google_service_account.api-runner.email
+  timeouts {}
+}
