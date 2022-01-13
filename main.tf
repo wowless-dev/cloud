@@ -80,6 +80,15 @@ resource "google_compute_managed_ssl_certificate" "certificate" {
   }
 }
 
+resource "google_compute_region_network_endpoint_group" "wowless" {
+  name                  = "wowless"
+  region                = "us-central1"
+  network_endpoint_type = "SERVERLESS"
+  cloud_run {
+    service = google_cloud_run_service.wowless.name
+  }
+}
+
 resource "google_compute_backend_bucket" "www" {
   name        = "www"
   bucket_name = google_storage_bucket.www.name
