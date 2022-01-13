@@ -218,6 +218,18 @@ resource "google_project_iam_member" "wowless-runner-storage-object-admin" {
   member  = "serviceAccount:${google_service_account.wowless-runner.email}"
 }
 
+data "google_iam_policy" "run-invoker-all-users" {
+  binding {
+    role    = "roles/run.invoker"
+    members = ["allUsers"]
+  }
+}
+
+resource "google_cloud_run_service_iam_policy" "wowless" {
+  service     = google_cloud_run_service.wowless.name
+  policy_data = data.google_iam_policy.run-invoker-all-users.policy_data
+}
+
 resource "google_cloud_run_service" "wowless" {
   name                       = "wowless"
   location                   = "us-central1"
