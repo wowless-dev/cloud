@@ -132,10 +132,6 @@ resource "google_compute_url_map" "frontend" {
       paths   = ["/api/v1/run"]
       service = google_compute_backend_service.api.id
     }
-    path_rule {
-      paths   = ["/wowless"]
-      service = google_compute_backend_service.wowless.id
-    }
   }
 }
 
