@@ -105,6 +105,18 @@ resource "google_compute_backend_bucket" "www" {
 resource "google_compute_url_map" "frontend" {
   name            = "frontend"
   default_service = google_compute_backend_bucket.www.id
+  host_rule {
+    hosts        = ["wowless.dev"]
+    path_matcher = "path-matcher-1"
+  }
+  path_matcher {
+    default_service = google_compute_backend_bucket.www.id
+    name            = "path-matcher-1"
+    path_rule {
+      paths   = ["/wowless"]
+      service = google_compute_backend_service.wowless.id
+    }
+  }
 }
 
 resource "google_compute_target_https_proxy" "frontend" {
