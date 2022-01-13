@@ -89,6 +89,14 @@ resource "google_compute_region_network_endpoint_group" "wowless" {
   }
 }
 
+resource "google_compute_backend_service" "wowless" {
+  name                            = "wowless"
+  connection_draining_timeout_sec = 0
+  backend {
+    group = google_compute_region_network_endpoint_group.wowless.id
+  }
+}
+
 resource "google_compute_backend_bucket" "www" {
   name        = "www"
   bucket_name = google_storage_bucket.www.name
