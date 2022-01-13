@@ -13,14 +13,6 @@ provider "google" {
   zone    = "us-central1-c"
 }
 
-resource "google_project_service" "apigateway" {
-  service = "apigateway.googleapis.com"
-}
-
-resource "google_project_service" "servicecontrol" {
-  service = "servicecontrol.googleapis.com"
-}
-
 resource "google_project_service" "servicemanagement" {
   service = "servicemanagement.googleapis.com"
 }
@@ -137,44 +129,6 @@ resource "google_compute_global_forwarding_rule" "frontend-redirect" {
   target     = google_compute_target_http_proxy.frontend-redirect.id
   ip_address = google_compute_global_address.frontend.id
   port_range = "80"
-}
-
-resource "google_api_gateway_api" "api" {
-  provider = google-beta
-  project  = "www-wowless-dev"
-  api_id   = "api"
-}
-
-resource "google_service_account" "api-invoker" {
-  account_id   = "api-invoker"
-  display_name = "api-invoker"
-}
-
-resource "google_project_iam_member" "api-invoker-run-invoker" {
-  project = "www-wowless-dev"
-  role    = "roles/run.invoker"
-  member  = "serviceAccount:${google_service_account.api-invoker.email}"
-}
-
-resource "google_api_gateway_api_config" "api" {
-  provider      = google-beta
-  project       = "www-wowless-dev"
-  api           = google_api_gateway_api.api.api_id
-  api_config_id = "api"
-  openapi_documents {
-    document {
-      path     = "spec.yaml"
-      contents = filebase64("openapi.yaml")
-    }
-  }
-  gateway_config {
-    backend_config {
-      google_service_account = google_service_account.api-invoker.email
-    }
-  }
-  lifecycle {
-    create_before_destroy = true
-  }
 }
 
 resource "google_service_account" "wowcig-runner" {
