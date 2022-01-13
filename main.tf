@@ -221,6 +221,13 @@ resource "google_project_iam_member" "wowless-runner-storage-object-admin" {
 data "google_iam_policy" "empty" {
 }
 
+data "google_iam_policy" "cloudfunctions-invoker-all-users" {
+  binding {
+    role    = "roles/cloudfunctions.invoker"
+    members = ["allUsers"]
+  }
+}
+
 data "google_iam_policy" "run-invoker-all-users" {
   binding {
     role    = "roles/run.invoker"
@@ -597,6 +604,11 @@ resource "google_project_iam_member" "api-runner-storage-object-admin" {
   project = "www-wowless-dev"
   role    = "roles/storage.objectAdmin"
   member  = "serviceAccount:${google_service_account.api-runner.email}"
+}
+
+resource "google_cloudfunctions_function_iam_policy" "api" {
+  cloud_function = google_cloudfunctions_function.api.name
+  policy_data    = data.google_iam_policy.cloudfunctions-invoker-all-users.policy_data
 }
 
 resource "google_cloudfunctions_function" "api" {
