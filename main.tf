@@ -574,3 +574,26 @@ resource "google_project_iam_member" "wowless-cron-runner-storage-object-viewer"
   role    = "roles/storage.objectViewer"
   member  = "serviceAccount:${google_service_account.wowless-cron-runner.email}"
 }
+
+resource "google_service_account" "api-runner" {
+  account_id   = "api-runner"
+  display_name = "api-runner"
+}
+
+resource "google_project_iam_member" "api-runner-cloud-tasks-enqueuer" {
+  project = "www-wowless-dev"
+  role    = "roles/cloudtasks.enqueuer"
+  member  = "serviceAccount:${google_service_account.api-runner.email}"
+}
+
+resource "google_project_iam_member" "api-runner-iam-service-account-user" {
+  project = "www-wowless-dev"
+  role    = "roles/iam.serviceAccountUser"
+  member  = "serviceAccount:${google_service_account.api-runner.email}"
+}
+
+resource "google_project_iam_member" "api-runner-storage-object-admin" {
+  project = "www-wowless-dev"
+  role    = "roles/storage.objectAdmin"
+  member  = "serviceAccount:${google_service_account.api-runner.email}"
+}
