@@ -97,6 +97,22 @@ resource "google_compute_backend_service" "wowless" {
   }
 }
 
+resource "google_compute_region_network_endpoint_group" "api" {
+  name                  = "wowless"
+  region                = "us-central1"
+  network_endpoint_type = "SERVERLESS"
+  cloud_function {
+    function = google_cloudfunctions_function.api.name
+  }
+}
+
+resource "google_compute_backend_service" "api" {
+  name = "api"
+  backend {
+    group = google_compute_region_network_endpoint_group.api.id
+  }
+}
+
 resource "google_compute_backend_bucket" "www" {
   name        = "www"
   bucket_name = google_storage_bucket.www.name
@@ -112,6 +128,10 @@ resource "google_compute_url_map" "frontend" {
   path_matcher {
     default_service = google_compute_backend_bucket.www.id
     name            = "path-matcher-1"
+    path_rule {
+      paths   = ["/api/v1/run"]
+      service = google_compute_backend_service.api.id
+    }
     path_rule {
       paths   = ["/wowless"]
       service = google_compute_backend_service.wowless.id
