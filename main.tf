@@ -237,13 +237,17 @@ resource "google_cloud_run_service" "wowless" {
   name                       = "wowless"
   location                   = "us-central1"
   autogenerate_revision_name = true
+  metadata {
+    annotations = {
+      "run.googleapis.com/ingress" = "all"
+    }
+  }
   template {
     metadata {
       annotations = {
         "autoscaling.knative.dev/maxScale"         = "1000"
         "client.knative.dev/user-image"            = "us-central1-docker.pkg.dev/www-wowless-dev/docker/wowless"
         "run.googleapis.com/execution-environment" = "gen2"
-        "run.googleapis.com/ingress"               = "all"
       }
     }
     spec {
