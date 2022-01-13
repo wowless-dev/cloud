@@ -98,7 +98,7 @@ resource "google_compute_backend_service" "wowless" {
 }
 
 resource "google_compute_region_network_endpoint_group" "api" {
-  name                  = "wowless"
+  name                  = "api"
   region                = "us-central1"
   network_endpoint_type = "SERVERLESS"
   cloud_function {
