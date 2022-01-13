@@ -80,23 +80,6 @@ resource "google_compute_managed_ssl_certificate" "certificate" {
   }
 }
 
-resource "google_compute_region_network_endpoint_group" "wowless" {
-  name                  = "wowless"
-  region                = "us-central1"
-  network_endpoint_type = "SERVERLESS"
-  cloud_run {
-    service = google_cloud_run_service.wowless.name
-  }
-}
-
-resource "google_compute_backend_service" "wowless" {
-  name                            = "wowless"
-  connection_draining_timeout_sec = 0
-  backend {
-    group = google_compute_region_network_endpoint_group.wowless.id
-  }
-}
-
 resource "google_compute_region_network_endpoint_group" "api" {
   name                  = "api"
   region                = "us-central1"
@@ -131,10 +114,6 @@ resource "google_compute_url_map" "frontend" {
     path_rule {
       paths   = ["/api/v1/run"]
       service = google_compute_backend_service.api.id
-    }
-    path_rule {
-      paths   = ["/wowless"]
-      service = google_compute_backend_service.wowless.id
     }
   }
 }
