@@ -619,5 +619,6 @@ resource "google_cloudfunctions_function" "api" {
   available_memory_mb   = 256
   trigger_http          = true
   service_account_email = google_service_account.api-runner.email
+  ingress_settings      = "ALLOW_INTERNAL_AND_GCLB"
   timeouts {}
 }
