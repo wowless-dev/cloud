@@ -22,27 +22,9 @@ resource "google_service_account" "github" {
   display_name = "github"
 }
 
-resource "google_project_iam_member" "github-editor" {
-  project = "www-wowless-dev"
-  role    = "roles/editor"
-  member  = "serviceAccount:${google_service_account.github.email}"
-}
-
 resource "google_service_account" "terraform" {
   account_id   = "terraform"
   display_name = "terraform"
-}
-
-resource "google_project_iam_member" "terraform-editor" {
-  project = "www-wowless-dev"
-  role    = "roles/editor"
-  member  = "serviceAccount:${google_service_account.terraform.email}"
-}
-
-resource "google_project_iam_member" "terraform-iam-security-admin" {
-  project = "www-wowless-dev"
-  role    = "roles/iam.securityAdmin"
-  member  = "serviceAccount:${google_service_account.terraform.email}"
 }
 
 resource "google_artifact_registry_repository" "docker" {
@@ -164,12 +146,6 @@ resource "google_service_account" "wowcig-runner" {
   display_name = "wowcig-runner"
 }
 
-resource "google_project_iam_member" "wowcig-runner-storage-object-admin" {
-  project = "www-wowless-dev"
-  role    = "roles/storage.objectAdmin"
-  member  = "serviceAccount:${google_service_account.wowcig-runner.email}"
-}
-
 resource "google_cloud_run_service" "wowcig" {
   name                       = "wowcig"
   location                   = "us-central1"
@@ -209,12 +185,6 @@ resource "google_cloud_run_service" "wowcig" {
 resource "google_service_account" "wowless-runner" {
   account_id   = "wowless-runner"
   display_name = "wowless-runner"
-}
-
-resource "google_project_iam_member" "wowless-runner-storage-object-admin" {
-  project = "www-wowless-dev"
-  role    = "roles/storage.objectAdmin"
-  member  = "serviceAccount:${google_service_account.wowless-runner.email}"
 }
 
 data "google_iam_policy" "empty" {
@@ -282,12 +252,6 @@ resource "google_service_account" "depickle-runner" {
   display_name = "depickle-runner"
 }
 
-resource "google_project_iam_member" "depickle-runner-storage-object-admin" {
-  project = "www-wowless-dev"
-  role    = "roles/storage.objectAdmin"
-  member  = "serviceAccount:${google_service_account.depickle-runner.email}"
-}
-
 resource "google_cloudfunctions_function" "depickle" {
   name                  = "depickle"
   runtime               = "python39"
@@ -302,12 +266,6 @@ resource "google_cloudfunctions_function" "depickle" {
 resource "google_service_account" "genindex-runner" {
   account_id   = "genindex-runner"
   display_name = "genindex-runner"
-}
-
-resource "google_project_iam_member" "genindex-runner-storage-object-admin" {
-  project = "www-wowless-dev"
-  role    = "roles/storage.objectAdmin"
-  member  = "serviceAccount:${google_service_account.genindex-runner.email}"
 }
 
 resource "google_cloudfunctions_function" "genindex" {
@@ -331,12 +289,6 @@ resource "google_cloudfunctions_function" "genindex" {
 resource "google_service_account" "wowcig-invoker" {
   account_id   = "wowcig-invoker"
   display_name = "wowcig-invoker"
-}
-
-resource "google_project_iam_member" "wowcig-invoker-run-invoker" {
-  project = "www-wowless-dev"
-  role    = "roles/run.invoker"
-  member  = "serviceAccount:${google_service_account.wowcig-invoker.email}"
 }
 
 resource "google_cloud_scheduler_job" "wowcig-crons" {
@@ -390,12 +342,6 @@ resource "google_cloud_scheduler_job" "wowcig-crons" {
 resource "google_service_account" "wowless-invoker" {
   account_id   = "wowless-invoker"
   display_name = "wowless-invoker"
-}
-
-resource "google_project_iam_member" "wowless-invoker-run-invoker" {
-  project = "www-wowless-dev"
-  role    = "roles/run.invoker"
-  member  = "serviceAccount:${google_service_account.wowless-invoker.email}"
 }
 
 resource "google_cloud_scheduler_job" "wowless-crons" {
@@ -467,30 +413,6 @@ resource "google_service_account" "addon-downloader-cron-runner" {
   display_name = "addon-downloader-cron-runner"
 }
 
-resource "google_project_iam_member" "addon-downloader-cron-runner-cloud-tasks-enqueuer" {
-  project = "www-wowless-dev"
-  role    = "roles/cloudtasks.enqueuer"
-  member  = "serviceAccount:${google_service_account.addon-downloader-cron-runner.email}"
-}
-
-resource "google_project_iam_member" "addon-downloader-cron-runner-cloud-tasks-viewer" {
-  project = "www-wowless-dev"
-  role    = "roles/cloudtasks.viewer"
-  member  = "serviceAccount:${google_service_account.addon-downloader-cron-runner.email}"
-}
-
-resource "google_project_iam_member" "addon-downloader-cron-runner-iam-service-account-user" {
-  project = "www-wowless-dev"
-  role    = "roles/iam.serviceAccountUser"
-  member  = "serviceAccount:${google_service_account.addon-downloader-cron-runner.email}"
-}
-
-resource "google_project_iam_member" "addon-downloader-cron-runner-storage-object-viewer" {
-  project = "www-wowless-dev"
-  role    = "roles/storage.objectViewer"
-  member  = "serviceAccount:${google_service_account.addon-downloader-cron-runner.email}"
-}
-
 resource "google_cloudfunctions_function" "addon-downloader-cron" {
   name                  = "addon-downloader-cron"
   runtime               = "python39"
@@ -508,21 +430,9 @@ resource "google_service_account" "addon-downloader-invoker" {
   display_name = "addon-downloader-invoker"
 }
 
-resource "google_project_iam_member" "addon-downloader-invoker-cloud-functions-invoker" {
-  project = "www-wowless-dev"
-  role    = "roles/cloudfunctions.invoker"
-  member  = "serviceAccount:${google_service_account.addon-downloader-invoker.email}"
-}
-
 resource "google_service_account" "addon-downloader-runner" {
   account_id   = "addon-downloader-runner"
   display_name = "addon-downloader-runner"
-}
-
-resource "google_project_iam_member" "addon-downloader-runner-storage-object-admin" {
-  project = "www-wowless-dev"
-  role    = "roles/storage.objectAdmin"
-  member  = "serviceAccount:${google_service_account.addon-downloader-runner.email}"
 }
 
 resource "google_cloudfunctions_function" "addon-downloader" {
@@ -558,57 +468,9 @@ resource "google_service_account" "wowless-cron-runner" {
   display_name = "wowless-cron-runner"
 }
 
-resource "google_project_iam_member" "wowless-cron-runner-cloud-tasks-enqueuer" {
-  project = "www-wowless-dev"
-  role    = "roles/cloudtasks.enqueuer"
-  member  = "serviceAccount:${google_service_account.wowless-cron-runner.email}"
-}
-
-resource "google_project_iam_member" "wowless-cron-runner-cloud-tasks-viewer" {
-  project = "www-wowless-dev"
-  role    = "roles/cloudtasks.viewer"
-  member  = "serviceAccount:${google_service_account.wowless-cron-runner.email}"
-}
-
-resource "google_project_iam_member" "wowless-cron-runner-iam-service-account-user" {
-  project = "www-wowless-dev"
-  role    = "roles/iam.serviceAccountUser"
-  member  = "serviceAccount:${google_service_account.wowless-cron-runner.email}"
-}
-
-resource "google_project_iam_member" "wowless-cron-runner-storage-object-viewer" {
-  project = "www-wowless-dev"
-  role    = "roles/storage.objectViewer"
-  member  = "serviceAccount:${google_service_account.wowless-cron-runner.email}"
-}
-
 resource "google_service_account" "api-runner" {
   account_id   = "api-runner"
   display_name = "api-runner"
-}
-
-resource "google_project_iam_member" "api-runner-cloud-tasks-enqueuer" {
-  project = "www-wowless-dev"
-  role    = "roles/cloudtasks.enqueuer"
-  member  = "serviceAccount:${google_service_account.api-runner.email}"
-}
-
-resource "google_project_iam_member" "api-runner-cloud-tasks-viewer" {
-  project = "www-wowless-dev"
-  role    = "roles/cloudtasks.viewer"
-  member  = "serviceAccount:${google_service_account.api-runner.email}"
-}
-
-resource "google_project_iam_member" "api-runner-iam-service-account-user" {
-  project = "www-wowless-dev"
-  role    = "roles/iam.serviceAccountUser"
-  member  = "serviceAccount:${google_service_account.api-runner.email}"
-}
-
-resource "google_project_iam_member" "api-runner-storage-object-admin" {
-  project = "www-wowless-dev"
-  role    = "roles/storage.objectAdmin"
-  member  = "serviceAccount:${google_service_account.api-runner.email}"
 }
 
 resource "google_cloudfunctions_function_iam_policy" "api" {
@@ -627,4 +489,160 @@ resource "google_cloudfunctions_function" "api" {
   service_account_email = google_service_account.api-runner.email
   ingress_settings      = "ALLOW_INTERNAL_AND_GCLB"
   timeouts {}
+}
+
+data "google_iam_policy" "project" {
+  binding {
+    members = [
+      "serviceAccount:service-408547218812@gcp-sa-artifactregistry.iam.gserviceaccount.com",
+    ]
+    role = "roles/artifactregistry.serviceAgent"
+  }
+  binding {
+    members = [
+      "serviceAccount:408547218812@cloudbuild.gserviceaccount.com",
+    ]
+    role = "roles/cloudbuild.builds.builder"
+  }
+  binding {
+    members = [
+      "serviceAccount:service-408547218812@gcp-sa-cloudbuild.iam.gserviceaccount.com",
+    ]
+    role = "roles/cloudbuild.serviceAgent"
+  }
+  binding {
+    members = [
+      "serviceAccount:addon-downloader-invoker@www-wowless-dev.iam.gserviceaccount.com",
+    ]
+    role = "roles/cloudfunctions.invoker"
+  }
+  binding {
+    members = [
+      "serviceAccount:service-408547218812@gcf-admin-robot.iam.gserviceaccount.com",
+    ]
+    role = "roles/cloudfunctions.serviceAgent"
+  }
+  binding {
+    members = [
+      "serviceAccount:service-408547218812@gcp-sa-cloudscheduler.iam.gserviceaccount.com",
+    ]
+    role = "roles/cloudscheduler.serviceAgent"
+  }
+  binding {
+    members = [
+      "serviceAccount:addon-downloader-cron-runner@www-wowless-dev.iam.gserviceaccount.com",
+      "serviceAccount:api-runner@www-wowless-dev.iam.gserviceaccount.com",
+      "serviceAccount:wowless-cron-runner@www-wowless-dev.iam.gserviceaccount.com",
+    ]
+    role = "roles/cloudtasks.enqueuer"
+  }
+  binding {
+    members = [
+      "serviceAccount:service-408547218812@gcp-sa-cloudtasks.iam.gserviceaccount.com",
+    ]
+    role = "roles/cloudtasks.serviceAgent"
+  }
+  binding {
+    members = [
+      "serviceAccount:addon-downloader-cron-runner@www-wowless-dev.iam.gserviceaccount.com",
+      "serviceAccount:api-runner@www-wowless-dev.iam.gserviceaccount.com",
+      "serviceAccount:wowless-cron-runner@www-wowless-dev.iam.gserviceaccount.com",
+    ]
+    role = "roles/cloudtasks.viewer"
+  }
+  binding {
+    members = [
+      "serviceAccount:service-408547218812@compute-system.iam.gserviceaccount.com",
+    ]
+    role = "roles/compute.serviceAgent"
+  }
+  binding {
+    members = [
+      "serviceAccount:service-408547218812@container-analysis.iam.gserviceaccount.com",
+    ]
+    role = "roles/containeranalysis.ServiceAgent"
+  }
+  binding {
+    members = [
+      "serviceAccount:service-408547218812@containerregistry.iam.gserviceaccount.com",
+    ]
+    role = "roles/containerregistry.ServiceAgent"
+  }
+  binding {
+    members = [
+      "serviceAccount:408547218812@cloudservices.gserviceaccount.com",
+      "serviceAccount:github@www-wowless-dev.iam.gserviceaccount.com",
+      "serviceAccount:terraform@www-wowless-dev.iam.gserviceaccount.com",
+    ]
+    role = "roles/editor"
+  }
+  binding {
+    members = [
+      "serviceAccount:service-408547218812@gcp-sa-firestore.iam.gserviceaccount.com",
+    ]
+    role = "roles/firestore.serviceAgent"
+  }
+  binding {
+    members = [
+      "serviceAccount:terraform@www-wowless-dev.iam.gserviceaccount.com",
+    ]
+    role = "roles/iam.securityAdmin"
+  }
+  binding {
+    members = [
+      "serviceAccount:408547218812@cloudbuild.gserviceaccount.com",
+      "serviceAccount:addon-downloader-cron-runner@www-wowless-dev.iam.gserviceaccount.com",
+      "serviceAccount:api-runner@www-wowless-dev.iam.gserviceaccount.com",
+      "serviceAccount:wowless-cron-runner@www-wowless-dev.iam.gserviceaccount.com",
+    ]
+    role = "roles/iam.serviceAccountUser"
+  }
+  binding {
+    members = [
+      "serviceAccount:service-408547218812@gcp-sa-pubsub.iam.gserviceaccount.com",
+    ]
+    role = "roles/pubsub.serviceAgent"
+  }
+  binding {
+    members = [
+      "serviceAccount:408547218812@cloudbuild.gserviceaccount.com",
+    ]
+    role = "roles/run.admin"
+  }
+  binding {
+    members = [
+      "serviceAccount:wowcig-invoker@www-wowless-dev.iam.gserviceaccount.com",
+      "serviceAccount:wowless-invoker@www-wowless-dev.iam.gserviceaccount.com",
+    ]
+    role = "roles/run.invoker"
+  }
+  binding {
+    members = [
+      "serviceAccount:service-408547218812@serverless-robot-prod.iam.gserviceaccount.com",
+    ]
+    role = "roles/run.serviceAgent"
+  }
+  binding {
+    members = [
+      "serviceAccount:addon-downloader-runner@www-wowless-dev.iam.gserviceaccount.com",
+      "serviceAccount:api-runner@www-wowless-dev.iam.gserviceaccount.com",
+      "serviceAccount:depickle-runner@www-wowless-dev.iam.gserviceaccount.com",
+      "serviceAccount:genindex-runner@www-wowless-dev.iam.gserviceaccount.com",
+      "serviceAccount:wowcig-runner@www-wowless-dev.iam.gserviceaccount.com",
+      "serviceAccount:wowless-runner@www-wowless-dev.iam.gserviceaccount.com",
+    ]
+    role = "roles/storage.objectAdmin"
+  }
+  binding {
+    members = [
+      "serviceAccount:addon-downloader-cron-runner@www-wowless-dev.iam.gserviceaccount.com",
+      "serviceAccount:wowless-cron-runner@www-wowless-dev.iam.gserviceaccount.com",
+    ]
+    role = "roles/storage.objectViewer"
+  }
+}
+
+resource "google_project_iam_policy" "project" {
+  project     = "www-wowless-dev"
+  policy_data = data.google_iam_policy.project.policy_data
 }
