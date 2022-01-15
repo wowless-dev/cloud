@@ -646,3 +646,11 @@ resource "google_project_iam_policy" "project" {
   project     = "www-wowless-dev"
   policy_data = data.google_iam_policy.project.policy_data
 }
+
+data "google_iam_policy" "storage-backend" {
+}
+
+resource "google_storage_bucket_iam_policy" "project" {
+  bucket      = "wowless.dev"
+  policy_data = data.google_iam_policy.storage-backend.policy_data
+}
