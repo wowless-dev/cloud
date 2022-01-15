@@ -593,6 +593,12 @@ resource "google_project_iam_member" "api-runner-cloud-tasks-enqueuer" {
   member  = "serviceAccount:${google_service_account.api-runner.email}"
 }
 
+resource "google_project_iam_member" "api-runner-cloud-tasks-viewer" {
+  project = "www-wowless-dev"
+  role    = "roles/cloudtasks.viewer"
+  member  = "serviceAccount:${google_service_account.api-runner.email}"
+}
+
 resource "google_project_iam_member" "api-runner-iam-service-account-user" {
   project = "www-wowless-dev"
   role    = "roles/iam.serviceAccountUser"
