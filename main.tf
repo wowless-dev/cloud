@@ -622,7 +622,7 @@ resource "google_cloudfunctions_function" "api" {
   entry_point           = "api"
   environment_variables = {}
   labels                = {}
-  available_memory_mb   = 256
+  available_memory_mb   = 1024
   trigger_http          = true
   service_account_email = google_service_account.api-runner.email
   ingress_settings      = "ALLOW_INTERNAL_AND_GCLB"
