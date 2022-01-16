@@ -187,12 +187,18 @@ resource "google_service_account" "wowless-runner" {
   display_name = "wowless-runner"
 }
 
-data "google_iam_policy" "empty" {
+data "google_iam_policy" "wowless" {
+  binding {
+    members = [
+      "serviceAccount:${google_service_account.wowless-invoker.email}",
+    ]
+    role = "roles/run.invoker"
+  }
 }
 
 resource "google_cloud_run_service_iam_policy" "wowless" {
   service     = google_cloud_run_service.wowless.name
-  policy_data = data.google_iam_policy.empty.policy_data
+  policy_data = data.google_iam_policy.wowless.policy_data
 }
 
 resource "google_cloud_run_service" "wowless" {
@@ -613,7 +619,6 @@ data "google_iam_policy" "project" {
   binding {
     members = [
       "serviceAccount:${google_service_account.wowcig-invoker.email}",
-      "serviceAccount:${google_service_account.wowless-invoker.email}",
     ]
     role = "roles/run.invoker"
   }
