@@ -99,6 +99,19 @@ resource "google_storage_bucket" "www" {
   }
 }
 
+data "google_iam_policy" "storage-run" {}
+
+resource "google_storage_bucket_iam_policy" "run" {
+  bucket      = google_storage_bucket.run.name
+  policy_data = data.google_iam_policy.storage-run.policy_data
+}
+
+resource "google_storage_bucket" "run" {
+  name                        = "run.wowless.dev"
+  location                    = "US"
+  uniform_bucket_level_access = true
+}
+
 resource "google_compute_managed_ssl_certificate" "certificate" {
   name = "certificate"
   managed {
