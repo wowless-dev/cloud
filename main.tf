@@ -657,7 +657,7 @@ data "google_iam_policy" "storage-backend" {
 }
 
 resource "google_storage_bucket_iam_policy" "backend" {
-  bucket      = "wowless.dev"
+  bucket      = google_storage_bucket.backend.name
   policy_data = data.google_iam_policy.storage-backend.policy_data
 }
 
@@ -675,6 +675,6 @@ data "google_iam_policy" "storage-frontend" {
 }
 
 resource "google_storage_bucket_iam_policy" "frontend" {
-  bucket      = "www.wowless.dev"
+  bucket      = google_storage_bucket.www.name
   policy_data = data.google_iam_policy.storage-frontend.policy_data
 }
