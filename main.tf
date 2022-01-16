@@ -350,6 +350,20 @@ resource "google_service_account" "wowless-invoker" {
   display_name = "wowless-invoker"
 }
 
+data "google_iam_policy" "wowless-invoker" {
+  binding {
+    members = [
+      "serviceAccount:${google_service_account.api-runner.email}",
+    ]
+    role = "roles/iam.serviceAccountUser"
+  }
+}
+
+resource "google_service_account_iam_policy" "wowless-invoker" {
+  service_account_id = google_service_account.wowless-invoker.name
+  policy_data        = data.google_iam_policy.wowless-invoker.policy_data
+}
+
 resource "google_cloud_scheduler_job" "wowless-crons" {
   for_each = {
     wowless-classic = {
@@ -613,7 +627,6 @@ data "google_iam_policy" "project" {
     members = [
       "serviceAccount:408547218812@cloudbuild.gserviceaccount.com",
       "serviceAccount:${google_service_account.addon-downloader-cron-runner.email}",
-      "serviceAccount:${google_service_account.api-runner.email}",
       "serviceAccount:${google_service_account.wowless-cron-runner.email}",
     ]
     role = "roles/iam.serviceAccountUser"
