@@ -197,13 +197,6 @@ data "google_iam_policy" "cloudfunctions-invoker-all-users" {
   }
 }
 
-data "google_iam_policy" "run-invoker-all-users" {
-  binding {
-    role    = "roles/run.invoker"
-    members = ["allUsers"]
-  }
-}
-
 resource "google_cloud_run_service_iam_policy" "wowless" {
   service     = google_cloud_run_service.wowless.name
   policy_data = data.google_iam_policy.empty.policy_data
@@ -435,6 +428,20 @@ resource "google_service_account" "addon-downloader-runner" {
   display_name = "addon-downloader-runner"
 }
 
+data "google_iam_policy" "addon-downloader" {
+  binding {
+    members = [
+      "serviceAccount:${google_service_account.addon-downloader-invoker.email}",
+    ]
+    role = "roles/cloudfunctions.invoker"
+  }
+}
+
+resource "google_cloudfunctions_function_iam_policy" "addon-downloader" {
+  cloud_function = google_cloudfunctions_function.addon-downloader.name
+  policy_data    = data.google_iam_policy.addon-downloader.policy_data
+}
+
 resource "google_cloudfunctions_function" "addon-downloader" {
   name                  = "addon-downloader"
   runtime               = "python39"
@@ -509,12 +516,6 @@ data "google_iam_policy" "project" {
       "serviceAccount:service-408547218812@gcp-sa-cloudbuild.iam.gserviceaccount.com",
     ]
     role = "roles/cloudbuild.serviceAgent"
-  }
-  binding {
-    members = [
-      "serviceAccount:${google_service_account.addon-downloader-invoker.email}",
-    ]
-    role = "roles/cloudfunctions.invoker"
   }
   binding {
     members = [
