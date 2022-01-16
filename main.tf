@@ -99,7 +99,15 @@ resource "google_storage_bucket" "www" {
   }
 }
 
-data "google_iam_policy" "storage-run" {}
+data "google_iam_policy" "storage-run" {
+  binding {
+    members = [
+      "serviceAccount:${google_service_account.api-runner.email}",
+      "serviceAccount:${google_service_account.wowless-runner.email}",
+    ]
+    role = "roles/storage.objectAdmin"
+  }
+}
 
 resource "google_storage_bucket_iam_policy" "run" {
   bucket      = google_storage_bucket.run.name
