@@ -190,13 +190,6 @@ resource "google_service_account" "wowless-runner" {
 data "google_iam_policy" "empty" {
 }
 
-data "google_iam_policy" "cloudfunctions-invoker-all-users" {
-  binding {
-    role    = "roles/cloudfunctions.invoker"
-    members = ["allUsers"]
-  }
-}
-
 resource "google_cloud_run_service_iam_policy" "wowless" {
   service     = google_cloud_run_service.wowless.name
   policy_data = data.google_iam_policy.empty.policy_data
@@ -480,9 +473,16 @@ resource "google_service_account" "api-runner" {
   display_name = "api-runner"
 }
 
+data "google_iam_policy" "api" {
+  binding {
+    role    = "roles/cloudfunctions.invoker"
+    members = ["allUsers"]
+  }
+}
+
 resource "google_cloudfunctions_function_iam_policy" "api" {
   cloud_function = google_cloudfunctions_function.api.name
-  policy_data    = data.google_iam_policy.cloudfunctions-invoker-all-users.policy_data
+  policy_data    = data.google_iam_policy.api.policy_data
 }
 
 resource "google_cloudfunctions_function" "api" {
