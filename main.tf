@@ -190,6 +190,13 @@ resource "google_service_account" "wowless-runner" {
 data "google_iam_policy" "empty" {
 }
 
+data "google_iam_policy" "cloudfunctions-invoker-all-users" {
+  binding {
+    role    = "roles/cloudfunctions.invoker"
+    members = ["allUsers"]
+  }
+}
+
 data "google_iam_policy" "run-invoker-all-users" {
   binding {
     role    = "roles/run.invoker"
@@ -466,34 +473,9 @@ resource "google_service_account" "api-runner" {
   display_name = "api-runner"
 }
 
-data "google_iam_policy" "api" {
-  binding {
-    role    = "roles/cloudfunctions.invoker"
-    members = ["allUsers"]
-  }
-  binding {
-    members = [
-      "serviceAccount:${google_service_account.api-runner.email}",
-    ]
-    role = "roles/cloudtasks.enqueuer"
-  }
-  binding {
-    members = [
-      "serviceAccount:${google_service_account.api-runner.email}",
-    ]
-    role = "roles/cloudtasks.viewer"
-  }
-  binding {
-    members = [
-      "serviceAccount:${google_service_account.api-runner.email}",
-    ]
-    role = "roles/iam.serviceAccountUser"
-  }
-}
-
 resource "google_cloudfunctions_function_iam_policy" "api" {
   cloud_function = google_cloudfunctions_function.api.name
-  policy_data    = data.google_iam_policy.api.policy_data
+  policy_data    = data.google_iam_policy.cloudfunctions-invoker-all-users.policy_data
 }
 
 resource "google_cloudfunctions_function" "api" {
@@ -549,6 +531,7 @@ data "google_iam_policy" "project" {
   binding {
     members = [
       "serviceAccount:${google_service_account.addon-downloader-cron-runner.email}",
+      "serviceAccount:${google_service_account.api-runner.email}",
       "serviceAccount:${google_service_account.wowless-cron-runner.email}",
     ]
     role = "roles/cloudtasks.enqueuer"
@@ -562,6 +545,7 @@ data "google_iam_policy" "project" {
   binding {
     members = [
       "serviceAccount:${google_service_account.addon-downloader-cron-runner.email}",
+      "serviceAccount:${google_service_account.api-runner.email}",
       "serviceAccount:${google_service_account.wowless-cron-runner.email}",
     ]
     role = "roles/cloudtasks.viewer"
@@ -608,6 +592,7 @@ data "google_iam_policy" "project" {
     members = [
       "serviceAccount:408547218812@cloudbuild.gserviceaccount.com",
       "serviceAccount:${google_service_account.addon-downloader-cron-runner.email}",
+      "serviceAccount:${google_service_account.api-runner.email}",
       "serviceAccount:${google_service_account.wowless-cron-runner.email}",
     ]
     role = "roles/iam.serviceAccountUser"
