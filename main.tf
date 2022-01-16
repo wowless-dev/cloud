@@ -146,6 +146,20 @@ resource "google_service_account" "wowcig-runner" {
   display_name = "wowcig-runner"
 }
 
+data "google_iam_policy" "wowcig" {
+  binding {
+    members = [
+      "serviceAccount:${google_service_account.wowcig-invoker.email}",
+    ]
+    role = "roles/run.invoker"
+  }
+}
+
+resource "google_cloud_run_service_iam_policy" "wowcig" {
+  service     = google_cloud_run_service.wowcig.name
+  policy_data = data.google_iam_policy.wowcig.policy_data
+}
+
 resource "google_cloud_run_service" "wowcig" {
   name                       = "wowcig"
   location                   = "us-central1"
@@ -615,12 +629,6 @@ data "google_iam_policy" "project" {
       "serviceAccount:408547218812@cloudbuild.gserviceaccount.com",
     ]
     role = "roles/run.admin"
-  }
-  binding {
-    members = [
-      "serviceAccount:${google_service_account.wowcig-invoker.email}",
-    ]
-    role = "roles/run.invoker"
   }
   binding {
     members = [
