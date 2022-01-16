@@ -624,6 +624,12 @@ data "google_iam_policy" "project" {
   }
   binding {
     members = [
+      "serviceAccount:${google_service_account.terraform.email}",
+    ]
+    role = "roles/storage.admin"
+  }
+  binding {
+    members = [
       "serviceAccount:${google_service_account.addon-downloader-runner.email}",
       "serviceAccount:${google_service_account.api-runner.email}",
       "serviceAccount:${google_service_account.depickle-runner.email}",
@@ -650,7 +656,19 @@ resource "google_project_iam_policy" "project" {
 data "google_iam_policy" "storage-backend" {
 }
 
-resource "google_storage_bucket_iam_policy" "project" {
+resource "google_storage_bucket_iam_policy" "backend" {
   bucket      = "wowless.dev"
   policy_data = data.google_iam_policy.storage-backend.policy_data
+}
+
+data "google_iam_policy" "storage-frontend" {
+  binding {
+    role    = "roles/storage.objectViewer"
+    members = ["allUsers"]
+  }
+}
+
+resource "google_storage_bucket_iam_policy" "frontend" {
+  bucket      = "www.wowless.dev"
+  policy_data = data.google_iam_policy.storage-frontend.policy_data
 }
