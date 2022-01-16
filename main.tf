@@ -628,24 +628,6 @@ data "google_iam_policy" "project" {
     ]
     role = "roles/storage.admin"
   }
-  binding {
-    members = [
-      "serviceAccount:${google_service_account.addon-downloader-runner.email}",
-      "serviceAccount:${google_service_account.api-runner.email}",
-      "serviceAccount:${google_service_account.depickle-runner.email}",
-      "serviceAccount:${google_service_account.genindex-runner.email}",
-      "serviceAccount:${google_service_account.wowcig-runner.email}",
-      "serviceAccount:${google_service_account.wowless-runner.email}",
-    ]
-    role = "roles/storage.objectAdmin"
-  }
-  binding {
-    members = [
-      "serviceAccount:${google_service_account.addon-downloader-cron-runner.email}",
-      "serviceAccount:${google_service_account.wowless-cron-runner.email}",
-    ]
-    role = "roles/storage.objectViewer"
-  }
 }
 
 resource "google_project_iam_policy" "project" {
@@ -654,6 +636,24 @@ resource "google_project_iam_policy" "project" {
 }
 
 data "google_iam_policy" "storage-backend" {
+  binding {
+    members = [
+      "serviceAccount:${google_service_account.addon-downloader-runner.email}",
+      "serviceAccount:${google_service_account.api-runner.email}",
+      "serviceAccount:${google_service_account.depickle-runner.email}",
+      "serviceAccount:${google_service_account.wowcig-runner.email}",
+      "serviceAccount:${google_service_account.wowless-runner.email}",
+    ]
+    role = "roles/storage.objectAdmin"
+  }
+  binding {
+    members = [
+      "serviceAccount:${google_service_account.addon-downloader-cron-runner.email}",
+      "serviceAccount:${google_service_account.genindex-runner.email}",
+      "serviceAccount:${google_service_account.wowless-cron-runner.email}",
+    ]
+    role = "roles/storage.objectViewer"
+  }
 }
 
 resource "google_storage_bucket_iam_policy" "backend" {
@@ -662,6 +662,12 @@ resource "google_storage_bucket_iam_policy" "backend" {
 }
 
 data "google_iam_policy" "storage-frontend" {
+  binding {
+    members = [
+      "serviceAccount:${google_service_account.genindex-runner.email}",
+    ]
+    role = "roles/storage.objectAdmin"
+  }
   binding {
     role    = "roles/storage.objectViewer"
     members = ["allUsers"]
