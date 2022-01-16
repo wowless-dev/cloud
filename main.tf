@@ -451,6 +451,20 @@ resource "google_service_account" "addon-downloader-invoker" {
   display_name = "addon-downloader-invoker"
 }
 
+data "google_iam_policy" "addon-downloader-invoker" {
+  binding {
+    members = [
+      "serviceAccount:${google_service_account.addon-downloader-cron-runner.email}",
+    ]
+    role = "roles/iam.serviceAccountUser"
+  }
+}
+
+resource "google_service_account_iam_policy" "addon-downloader-invoker" {
+  service_account_id = google_service_account.addon-downloader-invoker.name
+  policy_data        = data.google_iam_policy.addon-downloader-invoker.policy_data
+}
+
 resource "google_service_account" "addon-downloader-runner" {
   account_id   = "addon-downloader-runner"
   display_name = "addon-downloader-runner"
@@ -627,7 +641,6 @@ data "google_iam_policy" "project" {
   binding {
     members = [
       "serviceAccount:408547218812@cloudbuild.gserviceaccount.com",
-      "serviceAccount:${google_service_account.addon-downloader-cron-runner.email}",
     ]
     role = "roles/iam.serviceAccountUser"
   }
