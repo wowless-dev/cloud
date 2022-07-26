@@ -399,6 +399,10 @@ resource "google_cloud_scheduler_job" "wowcig-crons" {
       offset  = 2
       product = "wow_classic"
     }
+    wowcig-classic-beta = {
+      offset  = 6
+      product = "wow_classic_beta"
+    }
     wowcig-classic-era = {
       offset  = 0
       product = "wow_classic_era"
@@ -415,13 +419,17 @@ resource "google_cloud_scheduler_job" "wowcig-crons" {
       offset  = 5
       product = "wow"
     }
+    wowcig-retail-beta = {
+      offset  = 7
+      product = "wow_beta"
+    }
     wowcig-retail-ptr = {
       offset  = 4
       product = "wowt"
     }
   }
   name             = each.key
-  schedule         = "0 ${each.value.offset}-23/6 * * *"
+  schedule         = "0 ${each.value.offset}-23/8 * * *"
   time_zone        = "America/Chicago"
   attempt_deadline = "900s"
   http_target {
