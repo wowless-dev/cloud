@@ -36,7 +36,6 @@ resource "google_artifact_registry_repository" "docker" {
 data "google_iam_policy" "storage-backend" {
   binding {
     members = [
-      "serviceAccount:${google_service_account.addon-downloader-runner.email}",
       "serviceAccount:${google_service_account.api-runner.email}",
       "serviceAccount:${google_service_account.depickle-runner.email}",
       "serviceAccount:${google_service_account.wowcig-runner.email}",
@@ -46,7 +45,6 @@ data "google_iam_policy" "storage-backend" {
   }
   binding {
     members = [
-      "serviceAccount:${google_service_account.addon-downloader-cron-runner.email}",
       "serviceAccount:${google_service_account.genindex-runner.email}",
       "serviceAccount:${google_service_account.wowless-cron-runner.email}",
     ]
@@ -533,73 +531,6 @@ resource "google_cloud_tasks_queue" "addon-downloads" {
   timeouts {}
 }
 
-resource "google_service_account" "addon-downloader-cron-runner" {
-  account_id   = "addon-downloader-cron-runner"
-  display_name = "addon-downloader-cron-runner"
-}
-
-resource "google_cloudfunctions_function" "addon-downloader-cron" {
-  name                  = "addon-downloader-cron"
-  runtime               = "python39"
-  entry_point           = "publish"
-  environment_variables = {}
-  labels                = {}
-  available_memory_mb   = 1024
-  trigger_http          = true
-  service_account_email = google_service_account.addon-downloader-cron-runner.email
-  timeouts {}
-}
-
-resource "google_service_account" "addon-downloader-invoker" {
-  account_id   = "addon-downloader-invoker"
-  display_name = "addon-downloader-invoker"
-}
-
-data "google_iam_policy" "addon-downloader-invoker" {
-  binding {
-    members = [
-      "serviceAccount:${google_service_account.addon-downloader-cron-runner.email}",
-    ]
-    role = "roles/iam.serviceAccountUser"
-  }
-}
-
-resource "google_service_account_iam_policy" "addon-downloader-invoker" {
-  service_account_id = google_service_account.addon-downloader-invoker.name
-  policy_data        = data.google_iam_policy.addon-downloader-invoker.policy_data
-}
-
-resource "google_service_account" "addon-downloader-runner" {
-  account_id   = "addon-downloader-runner"
-  display_name = "addon-downloader-runner"
-}
-
-data "google_iam_policy" "addon-downloader" {
-  binding {
-    members = [
-      "serviceAccount:${google_service_account.addon-downloader-invoker.email}",
-    ]
-    role = "roles/cloudfunctions.invoker"
-  }
-}
-
-resource "google_cloudfunctions_function_iam_policy" "addon-downloader" {
-  cloud_function = google_cloudfunctions_function.addon-downloader.name
-  policy_data    = data.google_iam_policy.addon-downloader.policy_data
-}
-
-resource "google_cloudfunctions_function" "addon-downloader" {
-  name                  = "addon-downloader"
-  runtime               = "python39"
-  entry_point           = "handler"
-  environment_variables = {}
-  labels                = {}
-  available_memory_mb   = 1024
-  trigger_http          = true
-  service_account_email = google_service_account.addon-downloader-runner.email
-  timeouts {}
-}
-
 resource "google_cloud_tasks_queue" "wowless" {
   name     = "wowless"
   location = "us-central1"
@@ -684,7 +615,6 @@ data "google_iam_policy" "project" {
   }
   binding {
     members = [
-      "serviceAccount:${google_service_account.addon-downloader-cron-runner.email}",
       "serviceAccount:${google_service_account.api-runner.email}",
       "serviceAccount:${google_service_account.wowless-cron-runner.email}",
     ]
@@ -698,7 +628,6 @@ data "google_iam_policy" "project" {
   }
   binding {
     members = [
-      "serviceAccount:${google_service_account.addon-downloader-cron-runner.email}",
       "serviceAccount:${google_service_account.api-runner.email}",
       "serviceAccount:${google_service_account.wowless-cron-runner.email}",
     ]
