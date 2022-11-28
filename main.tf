@@ -37,14 +37,12 @@ data "google_iam_policy" "storage-backend" {
   binding {
     members = [
       "serviceAccount:${google_service_account.api-runner.email}",
-      "serviceAccount:${google_service_account.wowless-runner.email}",
     ]
     role = "roles/storage.objectAdmin"
   }
   binding {
     members = [
       "serviceAccount:${google_service_account.genindex-runner.email}",
-      "serviceAccount:${google_service_account.wowless-cron-runner.email}",
     ]
     role = "roles/storage.objectViewer"
   }
@@ -181,63 +179,6 @@ resource "google_compute_global_forwarding_rule" "frontend-redirect" {
   port_range = "80"
 }
 
-resource "google_service_account" "wowless-runner" {
-  account_id   = "wowless-runner"
-  display_name = "wowless-runner"
-}
-
-data "google_iam_policy" "wowless" {
-  binding {
-    members = [
-      "serviceAccount:${google_service_account.wowless-invoker.email}",
-    ]
-    role = "roles/run.invoker"
-  }
-}
-
-resource "google_cloud_run_service_iam_policy" "wowless" {
-  service     = google_cloud_run_service.wowless.name
-  policy_data = data.google_iam_policy.wowless.policy_data
-}
-
-resource "google_cloud_run_service" "wowless" {
-  name                       = "wowless"
-  location                   = "us-central1"
-  autogenerate_revision_name = true
-  metadata {
-    annotations = {
-      "autoscaling.knative.dev/maxScale"         = "1000"
-      "client.knative.dev/user-image"            = "us-central1-docker.pkg.dev/www-wowless-dev/docker/wowless"
-      "run.googleapis.com/execution-environment" = "gen2"
-      "run.googleapis.com/ingress"               = "all"
-      "run.googleapis.com/launch-stage"          = "BETA"
-    }
-  }
-  template {
-    spec {
-      container_concurrency = 1
-      service_account_name  = google_service_account.wowless-runner.email
-      timeout_seconds       = 300
-      containers {
-        args    = []
-        command = []
-        image   = "us-central1-docker.pkg.dev/www-wowless-dev/docker/wowless"
-        ports {
-          container_port = 8080
-          name           = "http1"
-        }
-        resources {
-          limits = {
-            "cpu"    = "1000m"
-            "memory" = "2048Mi"
-          }
-          requests = {}
-        }
-      }
-    }
-  }
-}
-
 resource "google_service_account" "genindex-runner" {
   account_id   = "genindex-runner"
   display_name = "genindex-runner"
@@ -259,111 +200,6 @@ resource "google_cloudfunctions_function" "genindex" {
   }
   service_account_email = google_service_account.genindex-runner.email
   timeouts {}
-}
-
-resource "google_service_account" "wowless-invoker" {
-  account_id   = "wowless-invoker"
-  display_name = "wowless-invoker"
-}
-
-data "google_iam_policy" "wowless-invoker" {
-  binding {
-    members = [
-      "serviceAccount:${google_service_account.api-runner.email}",
-      "serviceAccount:${google_service_account.wowless-cron-runner.email}",
-    ]
-    role = "roles/iam.serviceAccountUser"
-  }
-}
-
-resource "google_service_account_iam_policy" "wowless-invoker" {
-  service_account_id = google_service_account.wowless-invoker.name
-  policy_data        = data.google_iam_policy.wowless-invoker.policy_data
-}
-
-resource "google_cloud_scheduler_job" "wowless-crons" {
-  for_each = {
-    wowless-classic = {
-      offset  = 2
-      product = "wow_classic"
-    }
-    wowless-classic-era = {
-      offset  = 0
-      product = "wow_classic_era"
-    }
-    wowless-classic-era-ptr = {
-      offset  = 1
-      product = "wow_classic_era_ptr"
-    }
-    wowless-classic-ptr = {
-      offset  = 3
-      product = "wow_classic_ptr"
-    }
-    wowless-retail = {
-      offset  = 5
-      product = "wow"
-    }
-    wowless-retail-ptr = {
-      offset  = 4
-      product = "wowt"
-    }
-  }
-  name             = each.key
-  schedule         = "${each.value.offset}-59/6 * * * *"
-  time_zone        = "America/Chicago"
-  attempt_deadline = "50s"
-  http_target {
-    http_method = "POST"
-    uri         = "${google_cloud_run_service.wowless.status[0].url}/wowless?product=${each.value.product}&loglevel=1"
-    oidc_token {
-      audience              = ""
-      service_account_email = google_service_account.wowless-invoker.email
-    }
-  }
-  retry_config {
-    max_backoff_duration = "3600s"
-    max_doublings        = 5
-    max_retry_duration   = "0s"
-    min_backoff_duration = "5s"
-    retry_count          = 0
-  }
-}
-
-resource "google_cloud_tasks_queue" "addon-downloads" {
-  name     = "addon-downloads"
-  location = "us-central1"
-  rate_limits {
-    max_concurrent_dispatches = 1
-    max_dispatches_per_second = 1
-  }
-  retry_config {
-    max_attempts  = 5
-    max_backoff   = "3600s"
-    max_doublings = 16
-    min_backoff   = "0.100s"
-  }
-  timeouts {}
-}
-
-resource "google_cloud_tasks_queue" "wowless" {
-  name     = "wowless"
-  location = "us-central1"
-  rate_limits {
-    max_concurrent_dispatches = 1000
-    max_dispatches_per_second = 500
-  }
-  retry_config {
-    max_attempts  = 5
-    max_backoff   = "3600s"
-    max_doublings = 16
-    min_backoff   = "0.100s"
-  }
-  timeouts {}
-}
-
-resource "google_service_account" "wowless-cron-runner" {
-  account_id   = "wowless-cron-runner"
-  display_name = "wowless-cron-runner"
 }
 
 resource "google_service_account" "api-runner" {
@@ -430,7 +266,6 @@ data "google_iam_policy" "project" {
   binding {
     members = [
       "serviceAccount:${google_service_account.api-runner.email}",
-      "serviceAccount:${google_service_account.wowless-cron-runner.email}",
     ]
     role = "roles/cloudtasks.enqueuer"
   }
@@ -443,7 +278,6 @@ data "google_iam_policy" "project" {
   binding {
     members = [
       "serviceAccount:${google_service_account.api-runner.email}",
-      "serviceAccount:${google_service_account.wowless-cron-runner.email}",
     ]
     role = "roles/cloudtasks.viewer"
   }
