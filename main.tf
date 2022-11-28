@@ -1,4 +1,5 @@
 module "byobcdn" {
+  bucket = "byobcdn.wowless.dev"
   source = "./byobcdn"
 }
 
