@@ -95,58 +95,6 @@ resource "google_storage_bucket" "www" {
   }
 }
 
-data "google_iam_policy" "storage-run-addons" {
-  binding {
-    members = [
-      "serviceAccount:${google_service_account.api-runner.email}",
-    ]
-    role = "roles/storage.objectAdmin"
-  }
-  binding {
-    members = [
-      "serviceAccount:${google_service_account.wowless-runner.email}",
-    ]
-    role = "roles/storage.objectViewer"
-  }
-}
-
-resource "google_storage_bucket_iam_policy" "run-addons" {
-  bucket      = google_storage_bucket.run-addons.name
-  policy_data = data.google_iam_policy.storage-run-addons.policy_data
-}
-
-resource "google_storage_bucket" "run-addons" {
-  name                        = "run-addons.wowless.dev"
-  location                    = "US"
-  uniform_bucket_level_access = true
-}
-
-data "google_iam_policy" "storage-run-outputs" {
-  binding {
-    members = [
-      "serviceAccount:${google_service_account.wowless-runner.email}",
-    ]
-    role = "roles/storage.objectAdmin"
-  }
-  binding {
-    members = [
-      "serviceAccount:${google_service_account.api-runner.email}",
-    ]
-    role = "roles/storage.objectViewer"
-  }
-}
-
-resource "google_storage_bucket_iam_policy" "run-outputs" {
-  bucket      = google_storage_bucket.run-outputs.name
-  policy_data = data.google_iam_policy.storage-run-outputs.policy_data
-}
-
-resource "google_storage_bucket" "run-outputs" {
-  name                        = "run-outputs.wowless.dev"
-  location                    = "US"
-  uniform_bucket_level_access = true
-}
-
 resource "google_compute_managed_ssl_certificate" "certificate" {
   name = "certificate"
   managed {
