@@ -45,12 +45,6 @@ data "google_iam_policy" "storage-backend" {
     ]
     role = "roles/storage.objectAdmin"
   }
-  binding {
-    members = [
-      "serviceAccount:${google_service_account.genindex-runner.email}",
-    ]
-    role = "roles/storage.objectViewer"
-  }
 }
 
 resource "google_storage_bucket_iam_policy" "backend" {
@@ -68,12 +62,6 @@ resource "google_storage_bucket" "backend" {
 }
 
 data "google_iam_policy" "storage-frontend" {
-  binding {
-    members = [
-      "serviceAccount:${google_service_account.genindex-runner.email}",
-    ]
-    role = "roles/storage.objectAdmin"
-  }
   binding {
     role    = "roles/storage.objectViewer"
     members = ["allUsers"]
@@ -182,29 +170,6 @@ resource "google_compute_global_forwarding_rule" "frontend-redirect" {
   target     = google_compute_target_http_proxy.frontend-redirect.id
   ip_address = google_compute_global_address.frontend.id
   port_range = "80"
-}
-
-resource "google_service_account" "genindex-runner" {
-  account_id   = "genindex-runner"
-  display_name = "genindex-runner"
-}
-
-resource "google_cloudfunctions_function" "genindex" {
-  name                  = "genindex"
-  runtime               = "python39"
-  entry_point           = "genindex"
-  environment_variables = {}
-  labels                = {}
-  available_memory_mb   = 256
-  event_trigger {
-    event_type = "google.storage.object.finalize"
-    failure_policy {
-      retry = "true"
-    }
-    resource = "projects/_/buckets/wowless.dev"
-  }
-  service_account_email = google_service_account.genindex-runner.email
-  timeouts {}
 }
 
 resource "google_service_account" "api-runner" {
