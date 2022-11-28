@@ -37,7 +37,6 @@ data "google_iam_policy" "storage-backend" {
   binding {
     members = [
       "serviceAccount:${google_service_account.api-runner.email}",
-      "serviceAccount:${google_service_account.depickle-runner.email}",
       "serviceAccount:${google_service_account.wowcig-runner.email}",
       "serviceAccount:${google_service_account.wowless-runner.email}",
     ]
@@ -345,22 +344,6 @@ resource "google_cloud_run_service" "wowless" {
       }
     }
   }
-}
-
-resource "google_service_account" "depickle-runner" {
-  account_id   = "depickle-runner"
-  display_name = "depickle-runner"
-}
-
-resource "google_cloudfunctions_function" "depickle" {
-  name                  = "depickle"
-  runtime               = "python39"
-  entry_point           = "depickle"
-  environment_variables = {}
-  labels                = {}
-  trigger_http          = true
-  service_account_email = google_service_account.depickle-runner.email
-  timeouts {}
 }
 
 resource "google_service_account" "genindex-runner" {
