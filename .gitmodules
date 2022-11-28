@@ -1,0 +1,3 @@
+[submodule "byobcdn"]
+	path = byobcdn
+	url = https://github.com/wowless/byobcdn

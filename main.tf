@@ -1,3 +1,7 @@
+module "byobcdn" {
+  source = "./byobcdn"
+}
+
 terraform {
   cloud {
     organization = "wowless-dev"
