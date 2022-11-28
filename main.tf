@@ -37,7 +37,6 @@ data "google_iam_policy" "storage-backend" {
   binding {
     members = [
       "serviceAccount:${google_service_account.api-runner.email}",
-      "serviceAccount:${google_service_account.wowcig-runner.email}",
       "serviceAccount:${google_service_account.wowless-runner.email}",
     ]
     role = "roles/storage.objectAdmin"
@@ -234,61 +233,6 @@ resource "google_compute_global_forwarding_rule" "frontend-redirect" {
   port_range = "80"
 }
 
-resource "google_service_account" "wowcig-runner" {
-  account_id   = "wowcig-runner"
-  display_name = "wowcig-runner"
-}
-
-data "google_iam_policy" "wowcig" {
-  binding {
-    members = [
-      "serviceAccount:${google_service_account.wowcig-invoker.email}",
-    ]
-    role = "roles/run.invoker"
-  }
-}
-
-resource "google_cloud_run_service_iam_policy" "wowcig" {
-  service     = google_cloud_run_service.wowcig.name
-  policy_data = data.google_iam_policy.wowcig.policy_data
-}
-
-resource "google_cloud_run_service" "wowcig" {
-  name                       = "wowcig"
-  location                   = "us-central1"
-  autogenerate_revision_name = true
-  template {
-    metadata {
-      annotations = {
-        "autoscaling.knative.dev/maxScale"         = "1"
-        "client.knative.dev/user-image"            = "us-central1-docker.pkg.dev/www-wowless-dev/docker/wowcig"
-        "run.googleapis.com/execution-environment" = "gen1"
-      }
-    }
-    spec {
-      container_concurrency = 1
-      service_account_name  = google_service_account.wowcig-runner.email
-      timeout_seconds       = 900
-      containers {
-        args    = []
-        command = []
-        image   = "us-central1-docker.pkg.dev/www-wowless-dev/docker/wowcig"
-        ports {
-          container_port = 8080
-          name           = "http1"
-        }
-        resources {
-          limits = {
-            "cpu"    = "1000m"
-            "memory" = "4096Mi"
-          }
-          requests = {}
-        }
-      }
-    }
-  }
-}
-
 resource "google_service_account" "wowless-runner" {
   account_id   = "wowless-runner"
   display_name = "wowless-runner"
@@ -367,67 +311,6 @@ resource "google_cloudfunctions_function" "genindex" {
   }
   service_account_email = google_service_account.genindex-runner.email
   timeouts {}
-}
-
-resource "google_service_account" "wowcig-invoker" {
-  account_id   = "wowcig-invoker"
-  display_name = "wowcig-invoker"
-}
-
-resource "google_cloud_scheduler_job" "wowcig-crons" {
-  for_each = {
-    wowcig-classic = {
-      offset  = 2
-      product = "wow_classic"
-    }
-    wowcig-classic-beta = {
-      offset  = 6
-      product = "wow_classic_beta"
-    }
-    wowcig-classic-era = {
-      offset  = 0
-      product = "wow_classic_era"
-    }
-    wowcig-classic-era-ptr = {
-      offset  = 1
-      product = "wow_classic_era_ptr"
-    }
-    wowcig-classic-ptr = {
-      offset  = 3
-      product = "wow_classic_ptr"
-    }
-    wowcig-retail = {
-      offset  = 5
-      product = "wow"
-    }
-    wowcig-retail-beta = {
-      offset  = 7
-      product = "wow_beta"
-    }
-    wowcig-retail-ptr = {
-      offset  = 4
-      product = "wowt"
-    }
-  }
-  name             = each.key
-  schedule         = "0 ${each.value.offset}-23/8 * * *"
-  time_zone        = "America/Chicago"
-  attempt_deadline = "900s"
-  http_target {
-    http_method = "POST"
-    uri         = "${google_cloud_run_service.wowcig.status[0].url}/wowcig?product=${each.value.product}&db2=all"
-    oidc_token {
-      audience              = ""
-      service_account_email = google_service_account.wowcig-invoker.email
-    }
-  }
-  retry_config {
-    max_backoff_duration = "3600s"
-    max_doublings        = 5
-    max_retry_duration   = "0s"
-    min_backoff_duration = "5s"
-    retry_count          = 0
-  }
 }
 
 resource "google_service_account" "wowless-invoker" {
