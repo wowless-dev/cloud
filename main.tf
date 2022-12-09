@@ -41,7 +41,7 @@ resource "google_artifact_registry_repository" "docker" {
 data "google_iam_policy" "storage-backend" {
   binding {
     members = [
-      "serviceAccount:${google_service_account.api-runner.email}",
+      google_service_account.api-runner.member,
     ]
     role = "roles/storage.objectAdmin"
   }
@@ -235,7 +235,7 @@ data "google_iam_policy" "project" {
   }
   binding {
     members = [
-      "serviceAccount:${google_service_account.api-runner.email}",
+      google_service_account.api-runner.member,
     ]
     role = "roles/cloudtasks.enqueuer"
   }
@@ -247,7 +247,7 @@ data "google_iam_policy" "project" {
   }
   binding {
     members = [
-      "serviceAccount:${google_service_account.api-runner.email}",
+      google_service_account.api-runner.member,
     ]
     role = "roles/cloudtasks.viewer"
   }
@@ -271,11 +271,29 @@ data "google_iam_policy" "project" {
   }
   binding {
     members = [
+      "serviceAccount:byobcdn-process-runner@www-wowless-dev.iam.gserviceaccount.com",
+    ]
+    role = "roles/datastore.user"
+  }
+  binding {
+    members = [
+      "serviceAccount:byobcdn-www-runner@www-wowless-dev.iam.gserviceaccount.com",
+    ]
+    role = "roles/datastore.viewer"
+  }
+  binding {
+    members = [
       "serviceAccount:408547218812@cloudservices.gserviceaccount.com",
-      "serviceAccount:${google_service_account.github.email}",
-      "serviceAccount:${google_service_account.terraform.email}",
+      google_service_account.github.member,
+      google_service_account.terraform.member,
     ]
     role = "roles/editor"
+  }
+  binding {
+    members = [
+      "serviceAccount:service-408547218812@firebase-rules.iam.gserviceaccount.com",
+    ]
+    role = "roles/firebaserules.system"
   }
   binding {
     members = [
@@ -285,7 +303,7 @@ data "google_iam_policy" "project" {
   }
   binding {
     members = [
-      "serviceAccount:${google_service_account.terraform.email}",
+      google_service_account.terraform.member,
     ]
     role = "roles/iam.securityAdmin"
   }
@@ -315,7 +333,7 @@ data "google_iam_policy" "project" {
   }
   binding {
     members = [
-      "serviceAccount:${google_service_account.terraform.email}",
+      google_service_account.terraform.member,
     ]
     role = "roles/storage.admin"
   }
