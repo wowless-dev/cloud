@@ -93,6 +93,13 @@ resource "google_compute_managed_ssl_certificate" "certificate" {
   }
 }
 
+resource "google_compute_managed_ssl_certificate" "tactless" {
+  name = "tactless"
+  managed {
+    domains = ["tactless.dev"]
+  }
+}
+
 resource "google_compute_region_network_endpoint_group" "api" {
   name                  = "api"
   region                = "us-central1"
@@ -106,6 +113,22 @@ resource "google_compute_backend_service" "api" {
   name = "api"
   backend {
     group = google_compute_region_network_endpoint_group.api.id
+  }
+}
+
+resource "google_compute_region_network_endpoint_group" "tactless" {
+  name                  = "tactless"
+  region                = "us-central1"
+  network_endpoint_type = "SERVERLESS"
+  cloud_function {
+    function = "byobcdn-www"
+  }
+}
+
+resource "google_compute_backend_service" "tactless" {
+  name = "tactless"
+  backend {
+    group = google_compute_region_network_endpoint_group.tactless.id
   }
 }
 
@@ -129,12 +152,23 @@ resource "google_compute_url_map" "frontend" {
       service = google_compute_backend_service.api.id
     }
   }
+  host_rule {
+    hosts        = ["tactless.dev"]
+    path_matcher = "tactless"
+  }
+  path_matcher {
+    default_service = google_compute_backend_service.tactless.id
+    name            = "tactless"
+  }
 }
 
 resource "google_compute_target_https_proxy" "frontend" {
-  name             = "frontend-target-proxy"
-  ssl_certificates = [google_compute_managed_ssl_certificate.certificate.id]
-  url_map          = google_compute_url_map.frontend.id
+  name = "frontend-target-proxy"
+  ssl_certificates = [
+    google_compute_managed_ssl_certificate.certificate.id,
+    google_compute_managed_ssl_certificate.tactless.id,
+  ]
+  url_map = google_compute_url_map.frontend.id
 }
 
 resource "google_compute_global_address" "frontend" {
