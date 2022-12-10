@@ -306,6 +306,7 @@ data "google_iam_policy" "project" {
   binding {
     members = [
       "serviceAccount:byobcdn-process-runner@www-wowless-dev.iam.gserviceaccount.com",
+      "serviceAccount:byobcdn-tact-runner@www-wowless-dev.iam.gserviceaccount.com",
     ]
     role = "roles/datastore.user"
   }
