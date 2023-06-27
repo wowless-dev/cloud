@@ -248,7 +248,14 @@ resource "google_logging_project_sink" "default" {
   name                   = "_Default"
   destination            = "logging.googleapis.com/${google_logging_project_bucket_config.default.id}"
   unique_writer_identity = true
-  filter                 = "NOT LOG_ID(\"cloudaudit.googleapis.com/activity\") AND NOT LOG_ID(\"externalaudit.googleapis.com/activity\") AND NOT LOG_ID(\"cloudaudit.googleapis.com/system_event\") AND NOT LOG_ID(\"externalaudit.googleapis.com/system_event\") AND NOT LOG_ID(\"cloudaudit.googleapis.com/access_transparency\") AND NOT LOG_ID(\"externalaudit.googleapis.com/access_transparency\")"
+  filter = join(" AND ", [
+    "NOT LOG_ID(\"cloudaudit.googleapis.com/activity\")",
+    "NOT LOG_ID(\"externalaudit.googleapis.com/activity\")",
+    "NOT LOG_ID(\"cloudaudit.googleapis.com/system_event\")",
+    "NOT LOG_ID(\"externalaudit.googleapis.com/system_event\")",
+    "NOT LOG_ID(\"cloudaudit.googleapis.com/access_transparency\")",
+    "NOT LOG_ID(\"externalaudit.googleapis.com/access_transparency\")",
+  ])
 }
 
 data "google_iam_policy" "project" {
