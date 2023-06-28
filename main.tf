@@ -38,14 +38,7 @@ resource "google_artifact_registry_repository" "docker" {
   format        = "DOCKER"
 }
 
-data "google_iam_policy" "storage-backend" {
-  binding {
-    members = [
-      google_service_account.api-runner.member,
-    ]
-    role = "roles/storage.objectAdmin"
-  }
-}
+data "google_iam_policy" "storage-backend" {}
 
 resource "google_storage_bucket_iam_policy" "backend" {
   bucket      = google_storage_bucket.backend.name
@@ -100,22 +93,6 @@ resource "google_compute_managed_ssl_certificate" "tactless" {
   }
 }
 
-resource "google_compute_region_network_endpoint_group" "api" {
-  name                  = "api"
-  region                = "us-central1"
-  network_endpoint_type = "SERVERLESS"
-  cloud_function {
-    function = google_cloudfunctions_function.api.name
-  }
-}
-
-resource "google_compute_backend_service" "api" {
-  name = "api"
-  backend {
-    group = google_compute_region_network_endpoint_group.api.id
-  }
-}
-
 resource "google_compute_region_network_endpoint_group" "tactless" {
   name                  = "tactless"
   region                = "us-central1"
@@ -147,10 +124,6 @@ resource "google_compute_url_map" "frontend" {
   path_matcher {
     default_service = google_compute_backend_bucket.www.id
     name            = "path-matcher-1"
-    path_rule {
-      paths   = ["/api/v1/run"]
-      service = google_compute_backend_service.api.id
-    }
   }
   host_rule {
     hosts        = ["tactless.dev"]
@@ -204,36 +177,6 @@ resource "google_compute_global_forwarding_rule" "frontend-redirect" {
   target     = google_compute_target_http_proxy.frontend-redirect.id
   ip_address = google_compute_global_address.frontend.id
   port_range = "80"
-}
-
-resource "google_service_account" "api-runner" {
-  account_id   = "api-runner"
-  display_name = "api-runner"
-}
-
-data "google_iam_policy" "api" {
-  binding {
-    role    = "roles/cloudfunctions.invoker"
-    members = ["allUsers"]
-  }
-}
-
-resource "google_cloudfunctions_function_iam_policy" "api" {
-  cloud_function = google_cloudfunctions_function.api.name
-  policy_data    = data.google_iam_policy.api.policy_data
-}
-
-resource "google_cloudfunctions_function" "api" {
-  name                  = "api"
-  runtime               = "python39"
-  entry_point           = "api"
-  environment_variables = {}
-  labels                = {}
-  available_memory_mb   = 1024
-  trigger_http          = true
-  service_account_email = google_service_account.api-runner.email
-  ingress_settings      = "ALLOW_INTERNAL_AND_GCLB"
-  timeouts {}
 }
 
 resource "google_logging_project_bucket_config" "default" {
@@ -291,21 +234,9 @@ data "google_iam_policy" "project" {
   }
   binding {
     members = [
-      google_service_account.api-runner.member,
-    ]
-    role = "roles/cloudtasks.enqueuer"
-  }
-  binding {
-    members = [
       "serviceAccount:service-408547218812@gcp-sa-cloudtasks.iam.gserviceaccount.com",
     ]
     role = "roles/cloudtasks.serviceAgent"
-  }
-  binding {
-    members = [
-      google_service_account.api-runner.member,
-    ]
-    role = "roles/cloudtasks.viewer"
   }
   binding {
     members = [
