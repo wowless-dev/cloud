@@ -118,14 +118,6 @@ resource "google_compute_url_map" "frontend" {
   name            = "frontend"
   default_service = google_compute_backend_bucket.www.id
   host_rule {
-    hosts        = ["wowless.dev"]
-    path_matcher = "path-matcher-1"
-  }
-  path_matcher {
-    default_service = google_compute_backend_bucket.www.id
-    name            = "path-matcher-1"
-  }
-  host_rule {
     hosts        = ["tactless.dev"]
     path_matcher = "tactless"
   }
